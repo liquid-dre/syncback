@@ -1,4 +1,9 @@
+'use client';
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
   Mail,
@@ -64,6 +69,91 @@ const testimonials = [
 ];
 
 export default function Home() {
+  const mainRef = useRef<HTMLDivElement>(null);
+  const [heroPulse, setHeroPulse] = useState(false);
+
+  useEffect(() => {
+    const triggerPulse = () => setHeroPulse(true);
+
+    if (document.readyState === "complete") {
+      triggerPulse();
+    } else {
+      window.addEventListener("load", triggerPulse);
+    }
+
+    return () => {
+      window.removeEventListener("load", triggerPulse);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mainRef.current) {
+      return undefined;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>(".js-fade-up").forEach((section) => {
+        gsap.fromTo(
+          section,
+          { autoAlpha: 0, y: 80 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 1.1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 82%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      });
+
+      gsap.utils
+        .toArray<HTMLElement>(".js-stagger-children")
+        .forEach((container) => {
+          const items = container.querySelectorAll<HTMLElement>(".js-stagger-item");
+          if (!items.length) {
+            return;
+          }
+
+          gsap.from(items, {
+            autoAlpha: 0,
+            y: 40,
+            duration: 0.9,
+            ease: "power2.out",
+            stagger: 0.12,
+            scrollTrigger: {
+              trigger: container,
+              start: "top 85%",
+            },
+          });
+        });
+
+      gsap.utils.toArray<HTMLElement>(".js-parallax-card").forEach((card) => {
+        gsap.fromTo(
+          card,
+          { y: 60, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 1,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+            },
+          },
+        );
+      });
+    }, mainRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -74,8 +164,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-noise opacity-40 mix-blend-soft-light" />
       </div>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-32 px-6 pb-24 pt-24 sm:px-8 lg:px-12">
-        <section className="relative grid gap-16 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)] lg:items-center">
+      <main ref={mainRef} className="mx-auto flex w-full max-w-6xl flex-col gap-32 px-6 pb-24 pt-24 sm:px-8 lg:px-12">
+        <section className="relative grid gap-16 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)] lg:items-center js-fade-up">
           <div className="space-y-8">
             <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 shadow-sm backdrop-blur">
               <Sparkles className="h-4 w-4 text-sky-500" aria-hidden />
@@ -83,7 +173,9 @@ export default function Home() {
             </span>
             <div className="relative inline-block">
               <div
-                className="pointer-events-none absolute left-1/2 top-1/2 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(255,186,90,0.75),_rgba(255,214,150,0.35),_rgba(255,255,255,0)_70%)] "
+                className={`pointer-events-none absolute left-1/2 top-1/2 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.7),_rgba(56,189,248,0.38),_rgba(255,255,255,0)_70%)] ${
+                  heroPulse ? "animate-hero-pulse" : ""
+                }`}
                 aria-hidden
               />
               <h1 className="relative text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
@@ -124,8 +216,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative flex flex-col items-center justify-center gap-6">
-            <div className="relative h-full w-full max-w-[420px] rounded-[36px] border border-white/80 bg-white/80 p-6 shadow-xl shadow-slate-900/10 backdrop-blur">
+          <div className="relative flex flex-col items-center justify-center gap-6 js-stagger-children">
+            <div className="relative h-full w-full max-w-[420px] rounded-[36px] border border-white/80 bg-white/80 p-6 shadow-xl shadow-slate-900/10 backdrop-blur js-stagger-item js-parallax-card">
               <div className="flex items-center justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white">
                 <div>
                   <p className="text-sm text-white/70">New feedback</p>
@@ -164,7 +256,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 rounded-3xl border border-white/70 bg-white/80 px-5 py-4 text-sm font-medium text-slate-700 shadow-lg shadow-slate-900/10 backdrop-blur animate-float">
+            <div className="flex items-center gap-2 rounded-3xl border border-white/70 bg-white/80 px-5 py-4 text-sm font-medium text-slate-700 shadow-lg shadow-slate-900/10 backdrop-blur animate-float js-stagger-item js-parallax-card">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, index) => (
                   <Star key={`floating-${index}`} className="h-4 w-4 fill-amber-400 text-amber-400" />
@@ -175,11 +267,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="tour" className="grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3">
+        <section
+          id="tour"
+          className="grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3 js-fade-up js-stagger-children"
+        >
           {highlights.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="group flex flex-col gap-4 rounded-3xl border border-transparent bg-white/0 p-6 transition duration-500 hover:-translate-y-2 hover:border-slate-200 hover:bg-white/70"
+              className="group flex flex-col gap-4 rounded-3xl border border-transparent bg-white/0 p-6 transition duration-500 hover:-translate-y-2 hover:border-slate-200 hover:bg-white/70 js-stagger-item js-parallax-card"
             >
               <div className="w-fit rounded-full bg-slate-900/90 p-3 text-white shadow-lg shadow-slate-900/20 transition duration-500 group-hover:scale-110 group-hover:bg-slate-900">
                 <Icon className="h-5 w-5" aria-hidden />
@@ -192,8 +287,8 @@ export default function Home() {
           ))}
         </section>
 
-        <section className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="rounded-[32px] border border-white/70 bg-white/80 p-8 shadow-lg shadow-slate-900/10 backdrop-blur">
+        <section className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center js-fade-up">
+          <div className="rounded-[32px] border border-white/70 bg-white/80 p-8 shadow-lg shadow-slate-900/10 backdrop-blur js-stagger-children">
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Workflow</span>
             <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">
               From scan to inbox in a heartbeat.
@@ -201,9 +296,9 @@ export default function Home() {
             <p className="mt-4 text-base text-slate-600">
               SyncBack was designed for busy teams that value clarity over clutter. Every step is purposefully light so you can move from setup to actionable feedback in minutes.
             </p>
-            <div className="mt-8 space-y-6">
+            <div className="mt-8 space-y-6 js-stagger-children">
               {steps.map((step, index) => (
-                <div key={step.title} className="relative pl-12">
+                <div key={step.title} className="relative pl-12 js-stagger-item">
                   <div className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-md shadow-slate-900/20">
                     <span className="text-base font-semibold">{index + 1}</span>
                   </div>
@@ -213,7 +308,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex items-center justify-center js-parallax-card">
             <div className="absolute inset-0 -z-10 rounded-[40px] bg-gradient-to-br from-sky-200/70 via-indigo-200/40 to-transparent blur-2xl" aria-hidden />
             <div className="relative w-full max-w-xl rounded-[40px] border border-white/80 bg-white/80 p-6 shadow-2xl shadow-slate-900/10 backdrop-blur">
               <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white">
@@ -239,9 +334,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-            <div className="space-y-4">
+        <section className="rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur js-fade-up">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] js-stagger-children">
+            <div className="space-y-4 js-stagger-item">
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Loved by teams</span>
               <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
                 Real teams, real-time improvements.
@@ -250,9 +345,12 @@ export default function Home() {
                 SyncBack keeps the spotlight on customer joy. The more you listen, the faster you iterate.
               </p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 js-stagger-children">
               {testimonials.map(({ quote, name, role }) => (
-                <div key={name} className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl">
+                <div
+                  key={name}
+                  className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl js-stagger-item js-parallax-card"
+                >
                   <p className="text-base text-slate-700">{quote}</p>
                   <div className="mt-6">
                     <p className="text-sm font-semibold text-slate-900">{name}</p>
@@ -266,7 +364,7 @@ export default function Home() {
 
         <section
           id="get-started"
-          className="relative overflow-hidden rounded-[40px] border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-slate-900/30"
+          className="relative overflow-hidden rounded-[40px] border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-slate-900/30 js-fade-up"
         >
           <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" aria-hidden />
           <div className="relative z-10 flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
