@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { HeaderMegaMenu } from "@/components/navigation/HeaderMegaMenu";
 import {
   ArrowRight,
   Mail,
@@ -140,6 +141,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950">
+      <HeaderMegaMenu />
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-[-10%] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.28),_rgba(255,255,255,0))] blur-3xl" />
         <div className="absolute right-[8%] top-[25%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,_rgba(244,114,182,0.35),_rgba(255,255,255,0))] blur-3xl" />
