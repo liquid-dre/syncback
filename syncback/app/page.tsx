@@ -1,4 +1,9 @@
+'use client';
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
   Mail,
@@ -64,6 +69,75 @@ const testimonials = [
 ];
 
 export default function Home() {
+  const mainRef = useRef<HTMLDivElement>(null);
+  const [heroPulse, setHeroPulse] = useState(false);
+
+  useEffect(() => {
+    const triggerPulse = () => setHeroPulse(true);
+
+    if (document.readyState === "complete") {
+      triggerPulse();
+    } else {
+      window.addEventListener("load", triggerPulse);
+    }
+
+    return () => {
+      window.removeEventListener("load", triggerPulse);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mainRef.current) {
+      return undefined;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const heroSection = gsap.utils.toArray<HTMLElement>(".js-section-hero")[0];
+      if (heroSection) {
+        gsap.from(heroSection, {
+          autoAlpha: 0,
+          y: 60,
+          duration: 1.1,
+          ease: "power3.out",
+        });
+      }
+
+      const sectionSelectors = [
+        ".js-section-perks",
+        ".js-section-workflow",
+        ".js-section-testimonials",
+        ".js-section-cta",
+      ];
+
+      sectionSelectors.forEach((selector) => {
+        gsap.utils.toArray<HTMLElement>(selector).forEach((section) => {
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top 80%",
+            once: true,
+            onEnter: () => {
+              gsap.fromTo(
+                section,
+                { autoAlpha: 0, y: 60 },
+                {
+                  autoAlpha: 1,
+                  y: 0,
+                  duration: 1.1,
+                  ease: "power3.out",
+                  immediateRender: false,
+                },
+              );
+            },
+          });
+        });
+      });
+    }, mainRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -74,8 +148,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-noise opacity-40 mix-blend-soft-light" />
       </div>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-32 px-6 pb-24 pt-24 sm:px-8 lg:px-12">
-        <section className="relative grid gap-16 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)] lg:items-center">
+      <main ref={mainRef} className="mx-auto flex w-full max-w-6xl flex-col gap-32 px-6 pb-24 pt-24 sm:px-8 lg:px-12">
+        <section className="js-section-hero relative grid gap-16 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)] lg:items-center">
           <div className="space-y-8">
             <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 shadow-sm backdrop-blur">
               <Sparkles className="h-4 w-4 text-sky-500" aria-hidden />
@@ -83,7 +157,9 @@ export default function Home() {
             </span>
             <div className="relative inline-block">
               <div
-                className="pointer-events-none absolute left-1/2 top-1/2 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(255,186,90,0.75),_rgba(255,214,150,0.35),_rgba(255,255,255,0)_70%)] "
+                className={`pointer-events-none absolute left-1/2 top-1/2 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.7),_rgba(56,189,248,0.38),_rgba(255,255,255,0)_70%)] ${
+                  heroPulse ? "animate-hero-pulse" : ""
+                }`}
                 aria-hidden
               />
               <h1 className="relative text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
@@ -175,7 +251,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="tour" className="grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3">
+        <section
+          id="tour"
+          className="js-section-perks grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3"
+        >
           {highlights.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
@@ -192,7 +271,7 @@ export default function Home() {
           ))}
         </section>
 
-        <section className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <section className="js-section-workflow grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div className="rounded-[32px] border border-white/70 bg-white/80 p-8 shadow-lg shadow-slate-900/10 backdrop-blur">
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Workflow</span>
             <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">
@@ -239,7 +318,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur">
+        <section className="js-section-testimonials rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div className="space-y-4">
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Loved by teams</span>
@@ -252,7 +331,10 @@ export default function Home() {
             </div>
             <div className="grid gap-6 sm:grid-cols-2">
               {testimonials.map(({ quote, name, role }) => (
-                <div key={name} className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl">
+                <div
+                  key={name}
+                  className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl"
+                >
                   <p className="text-base text-slate-700">{quote}</p>
                   <div className="mt-6">
                     <p className="text-sm font-semibold text-slate-900">{name}</p>
@@ -266,7 +348,7 @@ export default function Home() {
 
         <section
           id="get-started"
-          className="relative overflow-hidden rounded-[40px] border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-slate-900/30"
+          className="js-section-cta relative overflow-hidden rounded-[40px] border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-slate-900/30"
         >
           <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" aria-hidden />
           <div className="relative z-10 flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
