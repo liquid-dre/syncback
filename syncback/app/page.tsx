@@ -94,60 +94,44 @@ export default function Home() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".js-fade-up").forEach((section) => {
-        gsap.fromTo(
-          section,
-          { autoAlpha: 0, y: 80 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 1.1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 82%",
-              toggleActions: "play none none reverse",
-            },
-          },
-        );
-      });
+      const heroSection = gsap.utils.toArray<HTMLElement>(".js-section-hero")[0];
+      if (heroSection) {
+        gsap.from(heroSection, {
+          autoAlpha: 0,
+          y: 60,
+          duration: 1.1,
+          ease: "power3.out",
+        });
+      }
 
-      gsap.utils
-        .toArray<HTMLElement>(".js-stagger-children")
-        .forEach((container) => {
-          const items = container.querySelectorAll<HTMLElement>(".js-stagger-item");
-          if (!items.length) {
-            return;
-          }
+      const sectionSelectors = [
+        ".js-section-perks",
+        ".js-section-workflow",
+        ".js-section-testimonials",
+        ".js-section-cta",
+      ];
 
-          gsap.from(items, {
-            autoAlpha: 0,
-            y: 40,
-            duration: 0.9,
-            ease: "power2.out",
-            stagger: 0.12,
-            scrollTrigger: {
-              trigger: container,
-              start: "top 85%",
+      sectionSelectors.forEach((selector) => {
+        gsap.utils.toArray<HTMLElement>(selector).forEach((section) => {
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top 80%",
+            once: true,
+            onEnter: () => {
+              gsap.fromTo(
+                section,
+                { autoAlpha: 0, y: 60 },
+                {
+                  autoAlpha: 1,
+                  y: 0,
+                  duration: 1.1,
+                  ease: "power3.out",
+                  immediateRender: false,
+                },
+              );
             },
           });
         });
-
-      gsap.utils.toArray<HTMLElement>(".js-parallax-card").forEach((card) => {
-        gsap.fromTo(
-          card,
-          { y: 60, autoAlpha: 0 },
-          {
-            y: 0,
-            autoAlpha: 1,
-            duration: 1,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 80%",
-            },
-          },
-        );
       });
     }, mainRef);
 
@@ -165,7 +149,7 @@ export default function Home() {
       </div>
 
       <main ref={mainRef} className="mx-auto flex w-full max-w-6xl flex-col gap-32 px-6 pb-24 pt-24 sm:px-8 lg:px-12">
-        <section className="relative grid gap-16 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)] lg:items-center js-fade-up">
+        <section className="js-section-hero relative grid gap-16 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)] lg:items-center">
           <div className="space-y-8">
             <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 shadow-sm backdrop-blur">
               <Sparkles className="h-4 w-4 text-sky-500" aria-hidden />
@@ -216,8 +200,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative flex flex-col items-center justify-center gap-6 js-stagger-children">
-            <div className="relative h-full w-full max-w-[420px] rounded-[36px] border border-white/80 bg-white/80 p-6 shadow-xl shadow-slate-900/10 backdrop-blur js-stagger-item js-parallax-card">
+          <div className="relative flex flex-col items-center justify-center gap-6">
+            <div className="relative h-full w-full max-w-[420px] rounded-[36px] border border-white/80 bg-white/80 p-6 shadow-xl shadow-slate-900/10 backdrop-blur">
               <div className="flex items-center justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white">
                 <div>
                   <p className="text-sm text-white/70">New feedback</p>
@@ -256,7 +240,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 rounded-3xl border border-white/70 bg-white/80 px-5 py-4 text-sm font-medium text-slate-700 shadow-lg shadow-slate-900/10 backdrop-blur animate-float js-stagger-item js-parallax-card">
+            <div className="flex items-center gap-2 rounded-3xl border border-white/70 bg-white/80 px-5 py-4 text-sm font-medium text-slate-700 shadow-lg shadow-slate-900/10 backdrop-blur animate-float">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, index) => (
                   <Star key={`floating-${index}`} className="h-4 w-4 fill-amber-400 text-amber-400" />
@@ -269,12 +253,12 @@ export default function Home() {
 
         <section
           id="tour"
-          className="grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3 js-fade-up js-stagger-children"
+          className="js-section-perks grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3"
         >
           {highlights.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="group flex flex-col gap-4 rounded-3xl border border-transparent bg-white/0 p-6 transition duration-500 hover:-translate-y-2 hover:border-slate-200 hover:bg-white/70 js-stagger-item js-parallax-card"
+              className="group flex flex-col gap-4 rounded-3xl border border-transparent bg-white/0 p-6 transition duration-500 hover:-translate-y-2 hover:border-slate-200 hover:bg-white/70"
             >
               <div className="w-fit rounded-full bg-slate-900/90 p-3 text-white shadow-lg shadow-slate-900/20 transition duration-500 group-hover:scale-110 group-hover:bg-slate-900">
                 <Icon className="h-5 w-5" aria-hidden />
@@ -287,8 +271,8 @@ export default function Home() {
           ))}
         </section>
 
-        <section className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center js-fade-up">
-          <div className="rounded-[32px] border border-white/70 bg-white/80 p-8 shadow-lg shadow-slate-900/10 backdrop-blur js-stagger-children">
+        <section className="js-section-workflow grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="rounded-[32px] border border-white/70 bg-white/80 p-8 shadow-lg shadow-slate-900/10 backdrop-blur">
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Workflow</span>
             <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">
               From scan to inbox in a heartbeat.
@@ -296,9 +280,9 @@ export default function Home() {
             <p className="mt-4 text-base text-slate-600">
               SyncBack was designed for busy teams that value clarity over clutter. Every step is purposefully light so you can move from setup to actionable feedback in minutes.
             </p>
-            <div className="mt-8 space-y-6 js-stagger-children">
+            <div className="mt-8 space-y-6">
               {steps.map((step, index) => (
-                <div key={step.title} className="relative pl-12 js-stagger-item">
+                <div key={step.title} className="relative pl-12">
                   <div className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-md shadow-slate-900/20">
                     <span className="text-base font-semibold">{index + 1}</span>
                   </div>
@@ -308,7 +292,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="relative flex items-center justify-center js-parallax-card">
+          <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 -z-10 rounded-[40px] bg-gradient-to-br from-sky-200/70 via-indigo-200/40 to-transparent blur-2xl" aria-hidden />
             <div className="relative w-full max-w-xl rounded-[40px] border border-white/80 bg-white/80 p-6 shadow-2xl shadow-slate-900/10 backdrop-blur">
               <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white">
@@ -334,9 +318,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur js-fade-up">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] js-stagger-children">
-            <div className="space-y-4 js-stagger-item">
+        <section className="js-section-testimonials rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="space-y-4">
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Loved by teams</span>
               <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
                 Real teams, real-time improvements.
@@ -345,11 +329,11 @@ export default function Home() {
                 SyncBack keeps the spotlight on customer joy. The more you listen, the faster you iterate.
               </p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 js-stagger-children">
+            <div className="grid gap-6 sm:grid-cols-2">
               {testimonials.map(({ quote, name, role }) => (
                 <div
                   key={name}
-                  className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl js-stagger-item js-parallax-card"
+                  className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl"
                 >
                   <p className="text-base text-slate-700">{quote}</p>
                   <div className="mt-6">
@@ -364,7 +348,7 @@ export default function Home() {
 
         <section
           id="get-started"
-          className="relative overflow-hidden rounded-[40px] border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-slate-900/30 js-fade-up"
+          className="js-section-cta relative overflow-hidden rounded-[40px] border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-slate-900/30"
         >
           <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" aria-hidden />
           <div className="relative z-10 flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
