@@ -83,7 +83,7 @@ export default function Home() {
             </span>
             <div className="relative inline-block">
               <div
-                className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(255,186,90,0.75),_rgba(255,214,150,0.35),_rgba(255,255,255,0)_70%)] blur-lg -z-10"
+                className="pointer-events-none absolute left-1/2 top-1/2 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(255,186,90,0.75),_rgba(255,214,150,0.35),_rgba(255,255,255,0)_70%)] "
                 aria-hidden
               />
               <h1 className="relative text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
