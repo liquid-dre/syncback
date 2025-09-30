@@ -8,6 +8,7 @@ import {
   IconCoin,
   IconFingerprint,
   IconNotification,
+  IconRefresh,
   TablerIconsProps,
 } from "@tabler/icons-react";
 import {
@@ -29,7 +30,6 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { MantineLogo } from "@mantinex/mantine-logo";
 import classes from "./HeaderMegaMenu.module.css";
 
 type MockDataItem = {
@@ -98,7 +98,14 @@ export function HeaderMegaMenu() {
     <Box pb={24}>
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
-          <MantineLogo size={30} />
+          <Group gap="xs">
+            <ThemeIcon size={36} radius="xl" variant="light" color="blue">
+              <IconRefresh size={22} />
+            </ThemeIcon>
+            <Text fw={700} size="xl">
+              syncback
+            </Text>
+          </Group>
 
           <Group h="100%" gap={0} visibleFrom="sm">
             <a href="#" className={classes.link}>
