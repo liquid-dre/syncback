@@ -10,9 +10,9 @@ export default defineSchema({
     organisationName: v.string(),
     organisationID: v.string(),
   })
-    .index("by_clerkUserId", ["clerkUserId"], { unique: true })
+    .index("by_clerkUserId", ["clerkUserId"])
     .index("by_email", ["email"])
-    .index("by_organisationID", ["organisationID"], { unique: true }),
+    .index("by_organisationID", ["organisationID"]),
 
   businesses: defineTable({
     ownerUserId: v.id("users"),
@@ -25,7 +25,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_ownerUserId", ["ownerUserId"])
-    .index("by_slug", ["slug"], { unique: true }),
+    .index("by_slug", ["slug"]),
 
   feedbacks: defineTable({
     businessId: v.id("businesses"),
@@ -51,5 +51,5 @@ export default defineSchema({
     count: v.number(),
     avgRating: v.number(),
     createdAt: v.number(),
-  }).index("by_businessId_date", ["businessId", "date"], { unique: true }),
+  }).index("by_businessId_date", ["businessId", "date"]),
 });
