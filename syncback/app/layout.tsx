@@ -1,6 +1,10 @@
+import "@mantine/core/styles.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { ColorSchemeScript } from "@mantine/core";
+
 import "./globals.css";
+import { Providers } from "./providers";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,8 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body className={`${poppins.className} antialiased`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
