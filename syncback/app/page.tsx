@@ -81,9 +81,15 @@ export default function Home() {
               <Sparkles className="h-4 w-4 text-sky-500" aria-hidden />
               Feedback that flows back instantly
             </span>
-            <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              Close the feedback loop the moment customers scan.
-            </h1>
+            <div className="relative inline-block">
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(255,186,90,0.75),_rgba(255,214,150,0.35),_rgba(255,255,255,0)_70%)] "
+                aria-hidden
+              />
+              <h1 className="relative text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+                Close the feedback loop the moment customers scan with SyncBack.
+              </h1>
+            </div>
             <p className="max-w-xl text-lg text-slate-600 sm:text-xl">
               SyncBack is the QR-powered feedback lane that brings candid ratings straight to your inbox—no apps, no logins, just beautifully simple insights you can act on today.
             </p>
@@ -118,7 +124,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex flex-col items-center justify-center gap-6">
             <div className="relative h-full w-full max-w-[420px] rounded-[36px] border border-white/80 bg-white/80 p-6 shadow-xl shadow-slate-900/10 backdrop-blur">
               <div className="flex items-center justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white">
                 <div>
@@ -158,15 +164,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="absolute -left-10 top-16 hidden rounded-3xl border border-white/70 bg-white/80 px-5 py-4 text-sm font-medium text-slate-700 shadow-lg shadow-slate-900/10 backdrop-blur sm:flex animate-float" aria-hidden>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[...Array(5)].map((_, index) => (
-                    <Star key={`floating-${index}`} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                “Made sharing thoughts so easy!”
+            <div className="flex items-center gap-2 rounded-3xl border border-white/70 bg-white/80 px-5 py-4 text-sm font-medium text-slate-700 shadow-lg shadow-slate-900/10 backdrop-blur animate-float">
+              <div className="flex items-center gap-1 text-amber-400">
+                {[...Array(5)].map((_, index) => (
+                  <Star key={`floating-${index}`} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                ))}
               </div>
+              “Made sharing thoughts so easy!”
             </div>
           </div>
         </section>
