@@ -12,7 +12,6 @@ import {
   TablerIconsProps,
 } from "@tabler/icons-react";
 import {
-  Anchor,
   Box,
   Burger,
   Button,
@@ -21,14 +20,14 @@ import {
   Divider,
   Drawer,
   Group,
-  HoverCard,
   ScrollArea,
-  SimpleGrid,
   Text,
   ThemeIcon,
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./HeaderMegaMenu.module.css";
 
@@ -108,15 +107,23 @@ export function HeaderMegaMenu() {
           </Group>
 
           <Group h="100%" gap={0} visibleFrom="sm">
-            <a href="#" className={classes.link}>
+            <Link href="/" className={classes.link}>
               Home
-            </a>
-           
+            </Link>
           </Group>
 
-          <Group visibleFrom="sm">
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+          <Group visibleFrom="sm" gap="sm">
+            <SignedOut>
+              <Button component={Link} href="/sign-in" variant="default">
+                Log in
+              </Button>
+              <Button component={Link} href="/sign-up">
+                Sign up
+              </Button>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: { width: 36, height: 36 } } }} />
+            </SignedIn>
           </Group>
 
           <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
@@ -135,9 +142,9 @@ export function HeaderMegaMenu() {
         <ScrollArea h="calc(100vh - 80px)" mx="-md">
           <Divider my="sm" />
 
-          <a href="#" className={classes.link}>
+          <Link href="/" className={classes.link}>
             Home
-          </a>
+          </Link>
           <UnstyledButton className={classes.link} onClick={toggleLinks}>
             <Center inline>
               <Box component="span" mr={5}>
@@ -156,10 +163,21 @@ export function HeaderMegaMenu() {
 
           <Divider my="sm" />
 
-          <Group justify="center" grow pb="xl" px="md">
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
-          </Group>
+          <SignedOut>
+            <Group justify="center" grow pb="xl" px="md">
+              <Button component={Link} href="/sign-in" variant="default">
+                Log in
+              </Button>
+              <Button component={Link} href="/sign-up">
+                Sign up
+              </Button>
+            </Group>
+          </SignedOut>
+          <SignedIn>
+            <Group justify="center" pb="xl" px="md">
+              <UserButton afterSignOutUrl="/" />
+            </Group>
+          </SignedIn>
         </ScrollArea>
       </Drawer>
     </Box>

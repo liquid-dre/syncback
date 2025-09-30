@@ -1,5 +1,6 @@
 "use client";
 
+import { ClerkProvider } from "@clerk/nextjs";
 import { MantineProvider } from "@mantine/core";
 import type { ReactNode } from "react";
 
@@ -8,5 +9,9 @@ type ProvidersProps = {
 };
 
 export function Providers({ children }: ProvidersProps) {
-  return <MantineProvider defaultColorScheme="light">{children}</MantineProvider>;
+  return (
+    <ClerkProvider>
+      <MantineProvider defaultColorScheme="light">{children}</MantineProvider>
+    </ClerkProvider>
+  );
 }
