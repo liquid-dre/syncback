@@ -377,16 +377,10 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
             <Link href="#tour" className="transition hover:text-slate-900">
-              Product tour
+              Contact
             </Link>
             <Link href="#" className="transition hover:text-slate-900">
-              Pricing
-            </Link>
-            <Link href="#" className="transition hover:text-slate-900">
-              Privacy
-            </Link>
-            <Link href="#" className="transition hover:text-slate-900">
-              Support
+              Offerings
             </Link>
           </div>
         </div>
