@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { Star } from "lucide-react";
 
-import AnimatedInput from "@/components/smoothui/ui/AnimatedInput";
-
 import { submitFeedback, type SubmitFeedbackState } from "../actions";
 
 type PublicBusiness = {
@@ -173,17 +171,30 @@ export default function FeedbackForm({ business }: FeedbackFormProps) {
       <input type="hidden" name="rating" value={rating.toString()} />
       <div className="space-y-6">
         <RatingSelector value={rating} onChange={setRating} />
-        <AnimatedInput
-          textarea
-          label="Tell us about your visit"
-          name="message"
-          value={message}
-          onValueChange={setMessage}
-          placeholder="What stood out? What could be even better?"
-          minLength={8}
-          rows={5}
-          required
-        />
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <label
+              htmlFor="message"
+              className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500"
+            >
+              Tell us about your visit
+            </label>
+            <p className="text-sm text-slate-500">
+              Share a few highlights, surprises, or opportunities you spotted during your time with {business.name}.
+            </p>
+          </div>
+          <textarea
+            id="message"
+            name="message"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            placeholder="What stood out? What could be even better?"
+            minLength={8}
+            rows={5}
+            required
+            className="w-full resize-none rounded-3xl border border-slate-200/80 bg-white/95 px-5 py-4 text-base text-slate-700 shadow-sm shadow-slate-900/5 transition focus:border-sky-400 focus:outline-none focus:ring-4 focus:ring-sky-100"
+          />
+        </div>
         {state.status === "error" ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
             {state.message ?? "We couldn’t save your feedback. Please try again."}
