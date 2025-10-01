@@ -30,6 +30,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./HeaderMegaMenu.module.css";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 type MockDataItem = {
   icon: (props: TablerIconsProps) => JSX.Element;
@@ -120,7 +121,8 @@ export function HeaderMegaMenu() {
             </SignedIn>
           </Group>
 
-          <Group visibleFrom="sm" gap="sm">
+          <Group visibleFrom="sm" gap="sm" align="center">
+            <DarkModeToggle />
             <SignedOut>
               <Button component={Link} href="/sign-in" variant="default">
                 Log in
@@ -178,6 +180,10 @@ export function HeaderMegaMenu() {
           </a>
 
           <Divider my="sm" />
+
+          <Group justify="flex-start" px="md" pb="md">
+            <DarkModeToggle />
+          </Group>
 
           <SignedOut>
             <Group justify="center" grow pb="xl" px="md">
