@@ -18,7 +18,7 @@ export default function NotFoundPage() {
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
               <Link
                 href="/"
-                className="inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:border-slate-300 hover:shadow-md sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:border-slate-300 hover:shadow-md hover:scale-115 hover:bg-blue-400 sm:w-auto"
               >
                 Get back to home page
               </Link>
