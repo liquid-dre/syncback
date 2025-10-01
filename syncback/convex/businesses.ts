@@ -1,6 +1,5 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import QRCode from "qrcode-generator";
 
 export const save = mutation({
   args: {
@@ -9,6 +8,7 @@ export const save = mutation({
     email: v.string(),
     slug: v.string(),
     appUrl: v.string(),
+    qrSvg: v.string(),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -38,21 +38,16 @@ export const save = mutation({
 
     const normalizedBaseUrl = args.appUrl.replace(/\/$/, "");
     const feedbackUrl = `${normalizedBaseUrl}/${slug}/feedback`;
-    const qr = QRCode(0, "M");
-    qr.addData(feedbackUrl);
-    qr.make();
-    const rawSvg = qr.createSvgTag({ scalable: true, margin: 2 });
-    const qrSvg = rawSvg.replace(/fill="#000000"/g, 'fill="#0f172a"');
 
     if (existing) {
       await ctx.db.patch(existing._id, {
         name: args.name,
         email: args.email,
         slug,
-        qrSvg,
+        qrSvg: args.qrSvg,
         updatedAt: timestamp,
       });
-      return { businessId: existing._id, slug, qrSvg, feedbackUrl };
+      return { businessId: existing._id, slug, qrSvg: args.qrSvg, feedbackUrl };
     }
 
     const insertedId = await ctx.db.insert("businesses", {
@@ -61,12 +56,12 @@ export const save = mutation({
       email: args.email,
       phone: "",
       slug,
-      qrSvg,
+      qrSvg: args.qrSvg,
       createdAt: timestamp,
       updatedAt: timestamp,
     });
 
-    return { businessId: insertedId, slug, qrSvg, feedbackUrl };
+    return { businessId: insertedId, slug, qrSvg: args.qrSvg, feedbackUrl };
   },
 });
 

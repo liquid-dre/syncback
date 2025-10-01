@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import { headers } from "next/headers";
 import { currentUser } from "@clerk/nextjs/server";
+import QRCode from "qrcode-generator";
 
 import { api } from "@/convex/_generated/api";
 import { getConvexClient } from "@/lib/convexClient";
@@ -94,12 +95,20 @@ export async function saveBusiness(
     organisationID: slug,
   });
 
+  const feedbackUrl = `${appUrl}/${slug}/feedback`;
+  const qr = QRCode(0, "M");
+  qr.addData(feedbackUrl);
+  qr.make();
+  const rawSvg = qr.createSvgTag({ scalable: true, margin: 2 });
+  const qrSvg = rawSvg.replace(/fill="#000000"/g, 'fill="#0f172a"');
+
   const result = await convex.mutation(api.businesses.save, {
     ownerUserId: ensuredUserId,
     name,
     email,
     slug,
     appUrl,
+    qrSvg,
   });
 
   return {
@@ -108,7 +117,7 @@ export async function saveBusiness(
     businessId: result.businessId,
     slug: result.slug,
     qrSvg: result.qrSvg,
-    feedbackUrl: result.feedbackUrl ?? `${appUrl}/${result.slug}/feedback`,
+    feedbackUrl: result.feedbackUrl ?? feedbackUrl,
     name,
     email,
   };

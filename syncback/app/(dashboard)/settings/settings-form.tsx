@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import {
   ArrowRight,
   CheckCircle2,
@@ -25,7 +25,7 @@ const fallbackState: SettingsFormState = {
 };
 
 export function SettingsForm({ initialState }: SettingsFormProps) {
-  const [state, formAction] = useFormState(saveBusiness, initialState ?? fallbackState);
+  const [state, formAction] = useActionState(saveBusiness, initialState ?? fallbackState);
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
