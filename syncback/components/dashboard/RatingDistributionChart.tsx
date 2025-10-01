@@ -30,6 +30,13 @@ const tooltipStyles: CSSProperties = {
 };
 
 export function RatingDistributionChart({ data }: RatingDistributionChartProps) {
+  const maxValue = data.reduce(
+    (currentMax, entry) =>
+      Number.isFinite(entry.value) ? Math.max(currentMax, entry.value) : currentMax,
+    0,
+  );
+  const domainMax = Math.max(10, Math.ceil((maxValue + 5) / 10) * 10);
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RadarChart data={data} outerRadius="70%">
@@ -41,7 +48,12 @@ export function RatingDistributionChart({ data }: RatingDistributionChartProps) 
         </defs>
         <PolarGrid stroke="rgba(148, 163, 184, 0.35)" radialLines={false} />
         <PolarAngleAxis dataKey="segment" tick={{ fill: "#64748b", fontSize: 12 }} />
-        <PolarRadiusAxis angle={45} domain={[0, 70]} tickCount={5} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+        <PolarRadiusAxis
+          angle={45}
+          domain={[0, domainMax]}
+          tickCount={5}
+          tick={{ fill: "#94a3b8", fontSize: 11 }}
+        />
         <Radar
           name="Ratings"
           dataKey="value"

@@ -1,5 +1,65 @@
-import { mutation } from "./_generated/server";
+import { mutation, query, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
+
+import type { Doc, Id } from "./_generated/dataModel";
+
+type FeedbackDoc = Doc<"feedbacks">;
+
+function averageRating(entries: FeedbackDoc[]) {
+  if (entries.length === 0) {
+    return 0;
+  }
+
+  const total = entries.reduce((sum, entry) => sum + entry.rating, 0);
+  return total / entries.length;
+}
+
+function percentageShare(entries: FeedbackDoc[], predicate: (entry: FeedbackDoc) => boolean) {
+  if (entries.length === 0) {
+    return 0;
+  }
+
+  const matches = entries.reduce((count, entry) => (predicate(entry) ? count + 1 : count), 0);
+  return (matches / entries.length) * 100;
+}
+
+function percentChange(current: number, previous: number, { allowInfinity = false } = {}) {
+  if (Number.isNaN(current) || Number.isNaN(previous)) {
+    return 0;
+  }
+
+  if (previous === 0) {
+    if (!allowInfinity) {
+      return 0;
+    }
+    return current === 0 ? 0 : 100;
+  }
+
+  return ((current - previous) / Math.abs(previous)) * 100;
+}
+
+async function fetchAllFeedback(ctx: QueryCtx, businessId: Id<"businesses">) {
+  const feedback: FeedbackDoc[] = [];
+  let cursor: string | undefined;
+
+  while (true) {
+    const page = await ctx.db
+      .query("feedbacks")
+      .withIndex("by_businessId_createdAt", (q) => q.eq("businessId", businessId))
+      .order("desc")
+      .paginate({ initialNumItems: 200, cursor });
+
+    feedback.push(...page.page);
+
+    if (page.done) {
+      break;
+    }
+
+    cursor = page.continueCursor ?? undefined;
+  }
+
+  return feedback;
+}
 
 function toDateKey(timestamp: number) {
   const date = new Date(timestamp);
@@ -79,5 +139,168 @@ export const submit = mutation({
     }
 
     return { feedbackId };
+  },
+});
+
+const monthFormatter = new Intl.DateTimeFormat("en-US", { month: "short" });
+
+export const dashboardData = query({
+  args: {
+    businessId: v.id("businesses"),
+  },
+  handler: async (ctx, args) => {
+    const allFeedback = await fetchAllFeedback(ctx, args.businessId);
+
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const periodMs = 30 * dayMs;
+    const currentPeriodStart = now - periodMs;
+    const previousPeriodStart = currentPeriodStart - periodMs;
+
+    const currentFeedback = allFeedback.filter((entry) => entry.createdAt >= currentPeriodStart);
+    const previousFeedback = allFeedback.filter(
+      (entry) => entry.createdAt >= previousPeriodStart && entry.createdAt < currentPeriodStart,
+    );
+
+    const ratingBucket = (rating: number) =>
+      Math.min(5, Math.max(1, Math.round(Number.isFinite(rating) ? rating : 0)));
+
+    const displayedAverageEntries = currentFeedback.length > 0 ? currentFeedback : allFeedback;
+    const displayedAverage = averageRating(displayedAverageEntries);
+    const currentAverage = averageRating(currentFeedback);
+    const previousAverage = averageRating(previousFeedback);
+    const averageDiff =
+      currentFeedback.length > 0 && previousFeedback.length > 0
+        ? percentChange(currentAverage, previousAverage)
+        : 0;
+
+    const isFiveStar = (entry: FeedbackDoc) => ratingBucket(entry.rating) === 5;
+    const displayedFiveStarEntries = currentFeedback.length > 0 ? currentFeedback : allFeedback;
+    const displayedFiveStarShare = percentageShare(displayedFiveStarEntries, isFiveStar);
+    const currentFiveStarShare = percentageShare(currentFeedback, isFiveStar);
+    const previousFiveStarShare = percentageShare(previousFeedback, isFiveStar);
+    const fiveStarDiff =
+      currentFeedback.length > 0 && previousFeedback.length > 0
+        ? percentChange(currentFiveStarShare, previousFiveStarShare)
+        : 0;
+
+    const isResolved = (entry: FeedbackDoc) => entry.status !== "new";
+    const displayedResolvedEntries = currentFeedback.length > 0 ? currentFeedback : allFeedback;
+    const displayedResolvedShare = percentageShare(displayedResolvedEntries, isResolved);
+    const currentResolvedShare = percentageShare(currentFeedback, isResolved);
+    const previousResolvedShare = percentageShare(previousFeedback, isResolved);
+    const resolvedDiff =
+      currentFeedback.length > 0 && previousFeedback.length > 0
+        ? percentChange(currentResolvedShare, previousResolvedShare)
+        : 0;
+
+    const currentVolume = currentFeedback.length;
+    const displayedVolume = currentVolume > 0 ? currentVolume : allFeedback.length;
+    const volumeDiff =
+      currentVolume > 0
+        ? percentChange(currentVolume, previousFeedback.length, { allowInfinity: true })
+        : 0;
+
+    const metrics =
+      allFeedback.length === 0
+        ? []
+        : [
+            {
+              title: "Average rating",
+              icon: "rating" as const,
+              value: displayedAverage.toFixed(2),
+              diff: Math.round(averageDiff),
+            },
+            {
+              title: "5-star share",
+              icon: "promoters" as const,
+              value: `${Math.round(displayedFiveStarShare)}%`,
+              diff: Math.round(fiveStarDiff),
+            },
+            {
+              title: "Feedback volume",
+              icon: "volume" as const,
+              value: displayedVolume.toString(),
+              diff: Math.round(volumeDiff),
+            },
+            {
+              title: "Follow-up resolved",
+              icon: "trends" as const,
+              value: `${Math.round(displayedResolvedShare)}%`,
+              diff: Math.round(resolvedDiff),
+            },
+          ];
+
+    const monthsToShow = 6;
+    const monthBuckets = new Map<string, { sum: number; count: number }>();
+    for (const entry of allFeedback) {
+      const date = new Date(entry.createdAt);
+      const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+      const bucket = monthBuckets.get(key) ?? { sum: 0, count: 0 };
+      bucket.sum += entry.rating;
+      bucket.count += 1;
+      monthBuckets.set(key, bucket);
+    }
+
+    const trendMonths: { label: string; key: string }[] = [];
+    const currentMonth = new Date();
+    for (let index = monthsToShow - 1; index >= 0; index -= 1) {
+      const date = new Date(
+        Date.UTC(
+          currentMonth.getUTCFullYear(),
+          currentMonth.getUTCMonth() - index,
+          1,
+          0,
+          0,
+          0,
+        ),
+      );
+      const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+      trendMonths.push({ label: monthFormatter.format(date), key });
+    }
+
+    const ratingTrend = trendMonths.map(({ key, label }) => {
+      const bucket = monthBuckets.get(key);
+      const average = bucket && bucket.count > 0 ? bucket.sum / bucket.count : 0;
+      return { month: label, average: Math.round(average * 100) / 100 };
+    });
+
+    const distributionCounts = [0, 0, 0, 0, 0, 0];
+    for (const entry of allFeedback) {
+      const bucket = ratingBucket(entry.rating);
+      distributionCounts[bucket] += 1;
+    }
+
+    const totalFeedback = allFeedback.length;
+    const ratingDistribution = [1, 2, 3, 4, 5].map((stars) => ({
+      segment: `${stars} Star${stars === 1 ? "" : "s"}`,
+      value:
+        totalFeedback === 0
+          ? 0
+          : Math.round((distributionCounts[stars] / totalFeedback) * 100),
+    }));
+
+    const recentRatings = [...allFeedback]
+      .reverse()
+      .map((entry) => ({
+        rating: entry.rating,
+        receivedAt: new Date(entry.createdAt).toISOString(),
+      }));
+
+    const maxFeedbackEntries = 200;
+    const recentFeedback = allFeedback.slice(0, maxFeedbackEntries).map((entry) => ({
+      id: String(entry._id),
+      receivedAt: new Date(entry.createdAt).toISOString(),
+      feedback: entry.message,
+      rating: entry.rating,
+    }));
+
+    return {
+      metrics,
+      ratingTrend,
+      ratingDistribution,
+      recentRatings,
+      recentFeedback,
+    };
   },
 });
