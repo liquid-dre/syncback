@@ -47,9 +47,7 @@ async function fetchAllFeedback(ctx: QueryCtx, businessId: Id<"businesses">) {
       .query("feedbacks")
       .withIndex("by_businessId_createdAt", (q) => q.eq("businessId", businessId))
       .order("desc")
-      .paginate(
-        cursor ? { cursor, numItems: 200 } : { initialNumItems: 200 },
-      );
+      .paginate({ initialNumItems: 200, cursor });
 
     feedback.push(...page.page);
 
