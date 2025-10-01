@@ -285,18 +285,6 @@ export function RecentFeedbackTable({ feedback }: RecentFeedbackTableProps) {
           )}
         </TableBody>
       </Table>
-      <p className="text-center text-sm text-muted-foreground">
-        Data table with filters made with {" "}
-        <a
-          className="underline transition-colors hover:text-foreground"
-          href="https://tanstack.com/table"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          TanStack Table
-        </a>
-        .
-      </p>
       {selectedFeedback ? (
         <FeedbackDetailModal
           entry={selectedFeedback}
