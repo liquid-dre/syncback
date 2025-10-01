@@ -42,7 +42,7 @@ function StarVisual({ variant }: { variant: "empty" | "half" | "full" }) {
     );
   }
 
-  return <Star className="pointer-events-none h-9 w-9 text-slate-500" strokeWidth={1.3} />;
+  return <Star className="pointer-events-none h-9 w-9 text-slate-300" strokeWidth={1.3} />;
 }
 
 function clampRating(value: number) {
@@ -91,7 +91,7 @@ function RatingSelector({ value, onChange }: RatingSelectorProps) {
 
   return (
     <div
-      className="group rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur"
+      className="group rounded-3xl border border-slate-200/80 bg-white/90 px-5 py-4 shadow-sm shadow-slate-900/5 backdrop-blur"
       role="slider"
       aria-label="Rate your visit"
       aria-valuenow={value}
@@ -104,10 +104,10 @@ function RatingSelector({ value, onChange }: RatingSelectorProps) {
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium uppercase tracking-[0.2em] text-slate-200">
+          <span className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
             Your rating
           </span>
-          <span className="rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-sky-100">
+          <span className="rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-700">
             {displayValue.toFixed(1)} / 5.0
           </span>
         </div>
@@ -167,7 +167,7 @@ export default function FeedbackForm({ business }: FeedbackFormProps) {
   return (
     <form
       action={formAction}
-      className="relative rounded-[32px] border border-white/15 bg-white/10 p-6 text-left shadow-[0_20px_60px_rgba(15,23,42,0.45)] backdrop-blur-xl sm:p-10"
+      className="relative rounded-[32px] border border-white/80 bg-white/90 p-6 text-left shadow-[0_30px_60px_rgba(15,23,42,0.12)] backdrop-blur sm:p-10"
     >
       <input type="hidden" name="slug" value={business.slug} />
       <input type="hidden" name="rating" value={rating.toString()} />
@@ -185,13 +185,13 @@ export default function FeedbackForm({ business }: FeedbackFormProps) {
           required
         />
         {state.status === "error" ? (
-          <div className="rounded-2xl border border-red-400/50 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
             {state.message ?? "We couldn’t save your feedback. Please try again."}
           </div>
         ) : null}
       </div>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-slate-200/80">
+        <p className="text-sm text-slate-500">
           We’ll share your note directly with the {business.name} team.
         </p>
         <button
@@ -200,8 +200,8 @@ export default function FeedbackForm({ business }: FeedbackFormProps) {
           className={clsx(
             "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-200",
             disableSubmit
-              ? "cursor-not-allowed bg-slate-500/40 text-slate-200/60"
-              : "bg-sky-400 text-slate-950 shadow-lg shadow-sky-500/30 hover:bg-sky-300",
+              ? "cursor-not-allowed bg-slate-200 text-slate-400"
+              : "bg-slate-900 text-white shadow-lg shadow-slate-900/20 hover:bg-slate-800",
           )}
         >
           {isPending ? "Sending feedback…" : "Send feedback"}
