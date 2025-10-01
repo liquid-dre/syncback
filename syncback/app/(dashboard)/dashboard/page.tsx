@@ -40,7 +40,7 @@ export default async function DashboardPage() {
     : null;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950">
+    <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950 dark:bg-slate-950 dark:text-slate-100">
       <HeaderMegaMenu />
       <PageBackground>
         <div className="absolute left-1/2 top-[-8%] h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.22),_rgba(255,255,255,0))] blur-3xl" />

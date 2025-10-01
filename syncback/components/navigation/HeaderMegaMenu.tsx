@@ -1,5 +1,7 @@
 "use client";
 
+import clsx from "clsx";
+
 import {
   IconBook,
   IconChartPie3,
@@ -30,6 +32,8 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./HeaderMegaMenu.module.css";
+import { DarkModeToggle } from "./DarkModeToggle";
+import { useTheme } from "@/lib/theme-context";
 
 type MockDataItem = {
   icon: (props: TablerIconsProps) => JSX.Element;
@@ -74,12 +78,18 @@ export function HeaderMegaMenu() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const theme = useMantineTheme();
+  const { isDark, themeClassName } = useTheme();
+
+  const accentColor = isDark ? theme.white : theme.colors.blue[6];
+  const subtleAccentColor = isDark ? theme.colors.blue[2] : theme.colors.blue[6];
+  const brandIconVariant = isDark ? "filled" : "light";
+  const featureIconVariant = isDark ? "filled" : "default";
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
       <Group wrap="nowrap" align="flex-start">
-        <ThemeIcon size={34} variant="default" radius="md">
-          <item.icon size={22} color={theme.colors.blue[6]} />
+        <ThemeIcon size={34} variant={featureIconVariant} radius="md" color="blue">
+          <item.icon size={22} color={accentColor} />
         </ThemeIcon>
         <div>
           <Text size="sm" fw={500}>
@@ -94,12 +104,12 @@ export function HeaderMegaMenu() {
   ));
 
   return (
-    <Box pb={24}>
+    <Box pb={24} className={clsx(themeClassName)}>
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
           <Group gap="xs">
-            <ThemeIcon size={36} radius="xl" variant="light" color="blue">
-              <IconRefresh size={22} />
+            <ThemeIcon size={36} radius="xl" variant={brandIconVariant} color="blue">
+              <IconRefresh size={22} color={accentColor} />
             </ThemeIcon>
             <Text fw={700} size="xl">
               syncback
@@ -120,7 +130,8 @@ export function HeaderMegaMenu() {
             </SignedIn>
           </Group>
 
-          <Group visibleFrom="sm" gap="sm">
+          <Group visibleFrom="sm" gap="sm" align="center">
+            <DarkModeToggle />
             <SignedOut>
               <Button component={Link} href="/sign-in" variant="default">
                 Log in
@@ -166,7 +177,7 @@ export function HeaderMegaMenu() {
               <Box component="span" mr={5}>
                 Features
               </Box>
-              <IconChevronDown size={16} color={theme.colors.blue[6]} />
+              <IconChevronDown size={16} color={subtleAccentColor} />
             </Center>
           </UnstyledButton>
           <Collapse in={linksOpened}>{links}</Collapse>
@@ -178,6 +189,10 @@ export function HeaderMegaMenu() {
           </a>
 
           <Divider my="sm" />
+
+          <Group justify="flex-start" px="md" pb="md">
+            <DarkModeToggle />
+          </Group>
 
           <SignedOut>
             <Group justify="center" grow pb="xl" px="md">

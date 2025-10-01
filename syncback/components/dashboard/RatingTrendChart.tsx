@@ -51,7 +51,7 @@ export function RatingTrendChart({ data }: RatingTrendChartProps) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" className="text-slate-500 dark:text-slate-300">
       <LineChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
         <defs>
           <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
@@ -59,13 +59,13 @@ export function RatingTrendChart({ data }: RatingTrendChartProps) {
             <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.1} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="4 8" stroke="rgba(148, 163, 184, 0.35)" vertical={false} />
-        <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
+        <CartesianGrid strokeDasharray="4 8" stroke="currentColor" strokeOpacity={0.25} vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "currentColor", fontSize: 12 }} />
         <YAxis
           domain={[lowerBound, upperBound]}
           tickLine={false}
           axisLine={false}
-          tick={{ fill: "#64748b", fontSize: 12 }}
+          tick={{ fill: "currentColor", fontSize: 12 }}
           allowDecimals
         />
         <Tooltip

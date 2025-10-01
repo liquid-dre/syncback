@@ -26,19 +26,19 @@ export function HighlightsSection() {
   return (
     <section
       id="tour"
-      className="js-section-perks grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3"
+      className="js-section-perks grid gap-10 rounded-[36px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur lg:grid-cols-3 dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-slate-900/40"
     >
       {highlights.map(({ icon: Icon, title, description }) => (
         <div
           key={title}
-          className="group flex flex-col gap-4 rounded-3xl border border-transparent bg-white/0 p-6 transition duration-500 hover:-translate-y-2 hover:border-slate-200 hover:bg-white/70"
+          className="group flex flex-col gap-4 rounded-3xl border border-transparent bg-white/0 p-6 transition duration-500 hover:-translate-y-2 hover:border-slate-200 hover:bg-white/70 dark:border-slate-700/60 dark:bg-slate-900/40 dark:hover:border-slate-600 dark:hover:bg-slate-900/70"
         >
-          <div className="w-fit rounded-full bg-slate-900/90 p-3 text-white shadow-lg shadow-slate-900/20 transition duration-500 group-hover:scale-110 group-hover:bg-slate-900">
+          <div className="w-fit rounded-full bg-slate-900/90 p-3 text-white shadow-lg shadow-slate-900/20 transition duration-500 group-hover:scale-110 group-hover:bg-slate-900 dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-slate-900/40">
             <Icon className="h-5 w-5" aria-hidden />
           </div>
           <div className="space-y-2">
-            <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
-            <p className="text-sm text-slate-600">{description}</p>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300">{description}</p>
           </div>
         </div>
       ))}

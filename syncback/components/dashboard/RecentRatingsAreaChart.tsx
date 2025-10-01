@@ -106,7 +106,7 @@ export function RecentRatingsAreaChart({
 
   if (!hasRatings) {
     return (
-      <div className="flex h-full min-h-[18rem] flex-col items-center justify-center rounded-[32px] border border-dashed border-slate-200 bg-white/70 p-8 text-center text-sm text-slate-500">
+      <div className="flex h-full min-h-[18rem] flex-col items-center justify-center rounded-[32px] border border-dashed border-slate-200 bg-white/70 p-8 text-center text-sm text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300">
         <p>No ratings have been collected yet. Share your feedback link to start seeing momentum here.</p>
       </div>
     );
@@ -115,9 +115,9 @@ export function RecentRatingsAreaChart({
   return (
     <div className="flex h-full flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="ratings-window" className="flex items-center justify-between text-slate-700">
+        <Label htmlFor="ratings-window" className="flex items-center justify-between text-slate-700 dark:text-slate-200">
           <span>Last {windowSize} ratings</span>
-          <span className="text-xs font-medium text-slate-400">Average {averageRating.toFixed(2)} ★</span>
+          <span className="text-xs font-medium text-slate-400 dark:text-slate-500">Average {averageRating.toFixed(2)} ★</span>
         </Label>
         <div>
           <Slider
@@ -131,7 +131,7 @@ export function RecentRatingsAreaChart({
             aria-label="Select the number of recent ratings to display"
           />
           <span
-            className="mt-3 flex w-full items-center justify-between gap-1 px-2.5 text-xs font-medium text-slate-400"
+            className="mt-3 flex w-full items-center justify-between gap-1 px-2.5 text-xs font-medium text-slate-400 dark:text-slate-500"
             aria-hidden="true"
           >
             {ticks.map((tick, index) => {
@@ -141,7 +141,7 @@ export function RecentRatingsAreaChart({
                 <span key={tick} className="flex w-0 flex-col items-center justify-center gap-2">
                   <span
                     className={cn(
-                      "bg-slate-400/70 h-1 w-px",
+                      "h-1 w-px bg-slate-400/70 dark:bg-slate-600/60",
                       !showLabel && "h-0.5",
                     )}
                   />
@@ -153,7 +153,7 @@ export function RecentRatingsAreaChart({
         </div>
       </div>
 
-      <div className="h-72 w-full">
+      <div className="h-72 w-full text-slate-500 dark:text-slate-300">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
             <defs>
@@ -162,9 +162,21 @@ export function RecentRatingsAreaChart({
                 <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.05} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="4 8" stroke="rgba(148, 163, 184, 0.35)" vertical={false} />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: "#64748b", fontSize: 12 }} interval="preserveStartEnd" />
-            <YAxis domain={[1, 5]} tickLine={false} axisLine={false} tick={{ fill: "#64748b", fontSize: 12 }} allowDecimals />
+            <CartesianGrid strokeDasharray="4 8" stroke="currentColor" strokeOpacity={0.25} vertical={false} />
+            <XAxis
+              dataKey="label"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "currentColor", fontSize: 12 }}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              domain={[1, 5]}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "currentColor", fontSize: 12 }}
+              allowDecimals
+            />
             <Tooltip
               cursor={{ stroke: "rgba(14,165,233,0.2)", strokeWidth: 2 }}
               contentStyle={tooltipStyles}

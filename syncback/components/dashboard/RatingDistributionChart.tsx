@@ -38,7 +38,7 @@ export function RatingDistributionChart({ data }: RatingDistributionChartProps) 
   const domainMax = Math.max(10, Math.ceil((maxValue + 5) / 10) * 10);
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" className="text-slate-500 dark:text-slate-300">
       <RadarChart data={data} outerRadius="70%">
         <defs>
           <linearGradient id="radarGradient" x1="0" y1="0" x2="1" y2="1">
@@ -46,13 +46,13 @@ export function RatingDistributionChart({ data }: RatingDistributionChartProps) 
             <stop offset="100%" stopColor="#22d3ee" stopOpacity={0.4} />
           </linearGradient>
         </defs>
-        <PolarGrid stroke="rgba(148, 163, 184, 0.35)" radialLines={false} />
-        <PolarAngleAxis dataKey="segment" tick={{ fill: "#64748b", fontSize: 12 }} />
+        <PolarGrid stroke="currentColor" strokeOpacity={0.25} radialLines={false} />
+        <PolarAngleAxis dataKey="segment" tick={{ fill: "currentColor", fontSize: 12 }} />
         <PolarRadiusAxis
           angle={45}
           domain={[0, domainMax]}
           tickCount={5}
-          tick={{ fill: "#94a3b8", fontSize: 11 }}
+          tick={{ fill: "currentColor", fontSize: 11 }}
         />
         <Radar
           name="Ratings"
