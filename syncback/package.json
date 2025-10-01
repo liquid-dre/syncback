@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.33.1",
+    "@internationalized/date": "^3.9.0",
     "@mantine/core": "^7.14.2",
     "@mantine/hooks": "^7.14.2",
     "@mantinex/mantine-logo": "^1.0.2",
@@ -24,6 +25,7 @@
     "next": "15.5.4",
     "qrcode-generator": "^1.5.2",
     "react": "19.1.0",
+    "react-aria-components": "^1.12.2",
     "react-dom": "19.1.0",
     "recharts": "^2.12.7",
     "tailwind-merge": "^3.3.1"
