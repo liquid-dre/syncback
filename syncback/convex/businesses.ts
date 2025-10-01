@@ -101,3 +101,23 @@ export const forClerkUser = query({
     };
   },
 });
+
+export const publicInfo = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    const business = await ctx.db
+      .query("businesses")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .unique();
+
+    if (!business) {
+      return null;
+    }
+
+    return {
+      _id: business._id,
+      name: business.name,
+      slug: business.slug,
+    };
+  },
+});
