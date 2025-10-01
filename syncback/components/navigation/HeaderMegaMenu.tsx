@@ -110,6 +110,14 @@ export function HeaderMegaMenu() {
             <Link href="/" className={classes.link}>
               Home
             </Link>
+            <SignedIn>
+              <Link href="/dashboard" className={classes.link}>
+                Dashboard
+              </Link>
+              <Link href="/settings" className={classes.link}>
+                Settings
+              </Link>
+            </SignedIn>
           </Group>
 
           <Group visibleFrom="sm" gap="sm">
@@ -145,6 +153,14 @@ export function HeaderMegaMenu() {
           <Link href="/" className={classes.link}>
             Home
           </Link>
+          <SignedIn>
+            <Link href="/dashboard" className={classes.link}>
+              Dashboard
+            </Link>
+            <Link href="/settings" className={classes.link}>
+              Settings
+            </Link>
+          </SignedIn>
           <UnstyledButton className={classes.link} onClick={toggleLinks}>
             <Center inline>
               <Box component="span" mr={5}>
