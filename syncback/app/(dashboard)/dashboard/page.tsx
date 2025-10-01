@@ -28,13 +28,13 @@ const ratingDistribution = [
 ];
 
 const recentRatings = [
-  { rating: 4.9, receivedAt: "2024-09-19T13:32:00Z" },
+  { rating: 3.9, receivedAt: "2024-09-19T13:32:00Z" },
   { rating: 4.8, receivedAt: "2024-09-21T09:14:00Z" },
   { rating: 5, receivedAt: "2024-09-22T16:05:00Z" },
   { rating: 4.6, receivedAt: "2024-09-23T11:47:00Z" },
   { rating: 4.7, receivedAt: "2024-09-24T18:22:00Z" },
   { rating: 4.5, receivedAt: "2024-09-25T20:41:00Z" },
-  { rating: 4.8, receivedAt: "2024-09-26T08:03:00Z" },
+  { rating: 3.2, receivedAt: "2024-09-26T08:03:00Z" },
   { rating: 4.9, receivedAt: "2024-09-27T12:18:00Z" },
   { rating: 4.4, receivedAt: "2024-09-28T15:55:00Z" },
   { rating: 4.7, receivedAt: "2024-09-29T10:29:00Z" },
@@ -44,7 +44,7 @@ const recentRatings = [
   { rating: 4.6, receivedAt: "2024-10-03T11:58:00Z" },
   { rating: 4.7, receivedAt: "2024-10-04T19:37:00Z" },
   { rating: 4.9, receivedAt: "2024-10-05T13:06:00Z" },
-  { rating: 4.8, receivedAt: "2024-10-06T08:44:00Z" },
+  { rating: 1.8, receivedAt: "2024-10-06T08:44:00Z" },
   { rating: 5, receivedAt: "2024-10-07T15:23:00Z" },
 ];
 
