@@ -76,6 +76,17 @@ export type FeedbackEntry = {
   rating: number;
 };
 
+const ratingBadgeStyle = (rating: number) => {
+  const clampedRating = Math.max(0, Math.min(5, rating));
+  const hue = (clampedRating / 5) * 120;
+
+  return {
+    backgroundColor: `hsla(${hue}, 100%, 92%, 1)`,
+    color: `hsl(${hue}, 100%, 22%)`,
+    borderColor: `hsla(${hue}, 100%, 70%, 0.6)`,
+  } as const;
+};
+
 const columns: ColumnDef<FeedbackEntry>[] = [
   {
     header: "Date",
@@ -130,14 +141,21 @@ const columns: ColumnDef<FeedbackEntry>[] = [
       const rating = row.getValue<number>("rating");
       return (
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-600">
+          <span
+            className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-semibold"
+            style={ratingBadgeStyle(rating)}
+          >
             {rating.toFixed(1)}
           </span>
           <StarRating rating={rating} variant="compact" />
         </div>
       );
     },
-    sortingFn: "alphanumeric",
+    sortingFn: (a, b, columnId) => {
+      const aValue = a.getValue<number>(columnId);
+      const bValue = b.getValue<number>(columnId);
+      return aValue === bValue ? 0 : aValue > bValue ? 1 : -1;
+    },
     filterFn: (row, columnId, value) => {
       if (!value) {
         return true;
@@ -160,7 +178,7 @@ export function RecentFeedbackTable({ feedback }: RecentFeedbackTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: "receivedAt",
+      id: "rating",
       desc: true,
     },
   ]);
