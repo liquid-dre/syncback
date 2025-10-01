@@ -5,8 +5,7 @@ import clsx from "clsx";
 import { useTheme } from "@/lib/theme-context";
 
 export function DarkModeToggle() {
-  const { colorScheme, setColorScheme } = useTheme();
-  const isDark = colorScheme === "dark";
+  const { isDark, setColorScheme } = useTheme();
 
   return (
     <div className="flex items-center">

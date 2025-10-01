@@ -15,6 +15,10 @@ type ColorScheme = "light" | "dark";
 
 type ThemeContextValue = {
   colorScheme: ColorScheme;
+  /** Convenience boolean for checking if the current scheme is dark */
+  isDark: boolean;
+  /** Utility class name that can be spread onto components */
+  themeClassName: string | undefined;
   setColorScheme: (value: ColorScheme) => void;
   toggleColorScheme: () => void;
 };
@@ -68,14 +72,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setColorSchemeState((current) => (current === "dark" ? "light" : "dark"));
   }, []);
 
-  const contextValue = useMemo(
-    () => ({
+  const contextValue = useMemo(() => {
+    const isDark = colorScheme === "dark";
+
+    return {
       colorScheme,
+      isDark,
+      themeClassName: isDark ? "dark" : undefined,
       setColorScheme,
       toggleColorScheme,
-    }),
-    [colorScheme, setColorScheme, toggleColorScheme],
-  );
+    } satisfies ThemeContextValue;
+  }, [colorScheme, setColorScheme, toggleColorScheme]);
 
   return (
     <ThemeContext.Provider value={contextValue}>
