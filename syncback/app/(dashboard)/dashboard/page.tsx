@@ -12,10 +12,10 @@ import { resolveAppUrl } from "../settings/actions";
 const ratingsTrend = [
   { month: "May", average: 4.3 },
   { month: "Jun", average: 4.4 },
-  { month: "Jul", average: 4.5 },
+  { month: "Jul", average: 2.5 },
   { month: "Aug", average: 4.6 },
   { month: "Sep", average: 4.7 },
-  { month: "Oct", average: 4.8 },
+  { month: "Oct", average: 3.8 },
 ];
 
 const ratingDistribution = [
