@@ -15,7 +15,7 @@ export function DarkModeToggle() {
         aria-pressed={isDark}
         onClick={() => setColorScheme("dark")}
         className={clsx(
-          "hs-dark-mode-active:hidden hs-dark-mode font-medium text-gray-800 rounded-full hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200",
+          "hs-dark-mode-active:hidden hs-dark-mode font-medium text-gray-800 rounded-full hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:focus:bg-slate-800/60",
           { block: !isDark, hidden: isDark },
         )}
       >
@@ -42,7 +42,7 @@ export function DarkModeToggle() {
         aria-pressed={!isDark}
         onClick={() => setColorScheme("light")}
         className={clsx(
-          "hs-dark-mode-active:block hs-dark-mode font-medium text-gray-800 rounded-full hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200",
+          "hs-dark-mode-active:block hs-dark-mode font-medium text-amber-500 rounded-full hover:bg-amber-500/10 focus:outline-hidden focus:bg-amber-500/10 dark:text-amber-300",
           { block: isDark, hidden: !isDark },
         )}
       >
