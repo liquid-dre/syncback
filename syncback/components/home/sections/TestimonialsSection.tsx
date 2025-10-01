@@ -13,12 +13,12 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="js-section-testimonials rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur">
+    <section className="js-section-testimonials rounded-[32px] border border-white/70 bg-white/70 p-10 shadow-xl shadow-slate-900/5 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-slate-900/40">
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="space-y-4">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Loved by teams</span>
-          <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">Real teams, real-time improvements.</h2>
-          <p className="text-base text-slate-600">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Loved by teams</span>
+          <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl dark:text-slate-100">Real teams, real-time improvements.</h2>
+          <p className="text-base text-slate-600 dark:text-slate-300">
             SyncBack keeps the spotlight on customer joy. The more you listen, the faster you iterate.
           </p>
         </div>
@@ -26,12 +26,12 @@ export function TestimonialsSection() {
           {testimonials.map(({ quote, name, role }) => (
             <div
               key={name}
-              className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl"
+              className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-lg shadow-slate-900/5 transition hover:-translate-y-2 hover:border-slate-300 hover:shadow-xl dark:border-slate-700/80 dark:bg-slate-800/60 dark:text-slate-100 dark:shadow-slate-900/30 dark:hover:border-slate-600"
             >
-              <p className="text-base text-slate-700">{quote}</p>
+              <p className="text-base text-slate-700 dark:text-slate-200">{quote}</p>
               <div className="mt-6">
-                <p className="text-sm font-semibold text-slate-900">{name}</p>
-                <p className="text-xs text-slate-500">{role}</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{role}</p>
               </div>
             </div>
           ))}

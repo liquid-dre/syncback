@@ -16,7 +16,7 @@ export function PerformanceOverviewSection({ businessName, metrics }: Performanc
           Track how guests feel about every experience and spot momentum in your ratings at a glance.
         </p>
       </div>
-      <div className="overflow-hidden rounded-[32px] border border-white/60 bg-white/70 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/60 dark:shadow-slate-900/40">
+      <div className="overflow-hidden rounded-[32px] border border-white/60 bg-white/70 shadow-xl backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-slate-900/40">
         <StatsGrid metrics={metrics} />
       </div>
     </section>
