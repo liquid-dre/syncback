@@ -19,6 +19,7 @@
     "convex": "^1.27.3",
     "gsap": "^3.13.0",
     "lucide-react": "^0.544.0",
+    "qrcode-generator": "^1.4.4",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
