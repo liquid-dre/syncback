@@ -30,6 +30,26 @@ const tooltipStyles: CSSProperties = {
 };
 
 export function RatingTrendChart({ data }: RatingTrendChartProps) {
+  const averages = data
+    .map((datum) => (Number.isFinite(datum.average) ? datum.average : 0))
+    .filter((value) => Number.isFinite(value));
+  const minAverage = averages.length > 0 ? Math.min(...averages) : 0;
+  const maxAverage = averages.length > 0 ? Math.max(...averages) : 5;
+  const padding = 0.2;
+  let lowerBound = Math.max(0, Math.floor((minAverage - padding) * 10) / 10);
+  let upperBound = Math.min(5, Math.ceil((maxAverage + padding) * 10) / 10);
+
+  if (!Number.isFinite(lowerBound)) {
+    lowerBound = 0;
+  }
+  if (!Number.isFinite(upperBound) || upperBound <= lowerBound) {
+    upperBound = Math.min(5, lowerBound + 1);
+  }
+  if (upperBound === lowerBound) {
+    lowerBound = Math.max(0, lowerBound - 0.5);
+    upperBound = Math.min(5, upperBound + 0.5);
+  }
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
@@ -42,7 +62,7 @@ export function RatingTrendChart({ data }: RatingTrendChartProps) {
         <CartesianGrid strokeDasharray="4 8" stroke="rgba(148, 163, 184, 0.35)" vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
         <YAxis
-          domain={[4, 5]}
+          domain={[lowerBound, upperBound]}
           tickLine={false}
           axisLine={false}
           tick={{ fill: "#64748b", fontSize: 12 }}

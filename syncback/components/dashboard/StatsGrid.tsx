@@ -28,14 +28,23 @@ type Metric = {
   diff: number;
 };
 
-const metrics: Metric[] = [
-  { title: "Average rating", icon: "rating", value: "4.7", diff: 8 },
-  { title: "5-star share", icon: "promoters", value: "62%", diff: 5 },
-  { title: "Feedback volume", icon: "volume", value: "284", diff: 18 },
-  { title: "Follow-up resolved", icon: "trends", value: "91%", diff: -4 },
-];
+type StatsGridProps = {
+  metrics: Metric[];
+};
 
-export function StatsGrid() {
+export function StatsGrid({ metrics }: StatsGridProps) {
+  if (metrics.length === 0) {
+    return (
+      <div className={classes.root}>
+        <Paper withBorder p="xl" radius="md" className={classes.card}>
+          <Text size="sm" c="dimmed">
+            Start collecting feedback to unlock live metrics.
+          </Text>
+        </Paper>
+      </div>
+    );
+  }
+
   const stats = metrics.map((stat) => {
     const Icon = icons[stat.icon];
     const DiffIcon = stat.diff >= 0 ? IconArrowUpRight : IconArrowDownRight;

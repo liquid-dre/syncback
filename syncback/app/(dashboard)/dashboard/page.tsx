@@ -11,107 +11,6 @@ import { getConvexClient } from "@/lib/convexClient";
 
 import { resolveAppUrl } from "../settings/actions";
 
-const ratingsTrend = [
-  { month: "May", average: 4.3 },
-  { month: "Jun", average: 4.4 },
-  { month: "Jul", average: 2.5 },
-  { month: "Aug", average: 4.6 },
-  { month: "Sep", average: 4.7 },
-  { month: "Oct", average: 3.8 },
-];
-
-const ratingDistribution = [
-  { segment: "5 Stars", value: 62 },
-  { segment: "4 Stars", value: 24 },
-  { segment: "3 Stars", value: 8 },
-  { segment: "2 Stars", value: 4 },
-  { segment: "1 Star", value: 2 },
-];
-
-const recentRatings = [
-  { rating: 3.9, receivedAt: "2024-09-19T13:32:00Z" },
-  { rating: 4.8, receivedAt: "2024-09-21T09:14:00Z" },
-  { rating: 5, receivedAt: "2024-09-22T16:05:00Z" },
-  { rating: 4.6, receivedAt: "2024-09-23T11:47:00Z" },
-  { rating: 4.7, receivedAt: "2024-09-24T18:22:00Z" },
-  { rating: 4.5, receivedAt: "2024-09-25T20:41:00Z" },
-  { rating: 3.2, receivedAt: "2024-09-26T08:03:00Z" },
-  { rating: 4.9, receivedAt: "2024-09-27T12:18:00Z" },
-  { rating: 4.4, receivedAt: "2024-09-28T15:55:00Z" },
-  { rating: 4.7, receivedAt: "2024-09-29T10:29:00Z" },
-  { rating: 4.9, receivedAt: "2024-09-30T14:36:00Z" },
-  { rating: 5, receivedAt: "2024-10-01T09:22:00Z" },
-  { rating: 4.8, receivedAt: "2024-10-02T17:11:00Z" },
-  { rating: 4.6, receivedAt: "2024-10-03T11:58:00Z" },
-  { rating: 4.7, receivedAt: "2024-10-04T19:37:00Z" },
-  { rating: 4.9, receivedAt: "2024-10-05T13:06:00Z" },
-  { rating: 1.8, receivedAt: "2024-10-06T08:44:00Z" },
-  { rating: 5, receivedAt: "2024-10-07T15:23:00Z" },
-];
-
-const recentFeedback = [
-  {
-    id: "1",
-    receivedAt: "2024-10-07T15:23:00Z",
-    feedback: "Our team appreciated how friendly and attentive your staff were during the dinner rush!",
-    rating: 5,
-  },
-  {
-    id: "2",
-    receivedAt: "2024-10-06T08:44:00Z",
-    feedback: "Loved the seasonal latte, though the wait time for pickup was a little longer than expected.",
-    rating: 4.2,
-  },
-  {
-    id: "3",
-    receivedAt: "2024-10-05T13:06:00Z",
-    feedback: "The lobby music was a bit loud, but the concierge helped us settle in quickly—thank you!",
-    rating: 4.6,
-  },
-  {
-    id: "4",
-    receivedAt: "2024-10-04T19:37:00Z",
-    feedback: "Bathrooms were spotless and the new QR ordering flow was super easy to use.",
-    rating: 4.8,
-  },
-  {
-    id: "5",
-    receivedAt: "2024-10-03T11:58:00Z",
-    feedback: "Our conference room projector flickered a few times—could someone check the HDMI cable?",
-    rating: 3.7,
-  },
-  {
-    id: "6",
-    receivedAt: "2024-10-02T17:11:00Z",
-    feedback: "The new gluten-free pastries were a hit with our team. Please keep them on the menu!",
-    rating: 4.9,
-  },
-  {
-    id: "7",
-    receivedAt: "2024-10-01T09:22:00Z",
-    feedback: "Check-in was smooth, but the room thermostat seemed off by a few degrees overnight.",
-    rating: 4.1,
-  },
-  {
-    id: "8",
-    receivedAt: "2024-09-30T14:36:00Z",
-    feedback: "Appreciate the quick response on my lost item request—everything was handled perfectly.",
-    rating: 4.7,
-  },
-  {
-    id: "9",
-    receivedAt: "2024-09-29T10:29:00Z",
-    feedback: "The QR code took us to the survey instantly and the follow-up email felt very personalised.",
-    rating: 4.5,
-  },
-  {
-    id: "10",
-    receivedAt: "2024-09-28T15:55:00Z",
-    feedback: "Coffee refills slowed down after noon—maybe a dedicated barista during peak hours?",
-    rating: 3.8,
-  },
-];
-
 export default async function DashboardPage() {
   const user = await currentUser();
 
@@ -130,6 +29,13 @@ export default async function DashboardPage() {
     .catch(() => null);
 
   const businessName = business?.name ?? "Your business";
+  const dashboardData = business
+    ? await convex
+        .query(api.feedbacks.dashboardData, {
+          businessId: business._id,
+        })
+        .catch(() => null)
+    : null;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950">
@@ -156,7 +62,7 @@ export default async function DashboardPage() {
             </p>
           </div>
           <div className="overflow-hidden rounded-[32px] border border-white/60 bg-white/70 shadow-xl backdrop-blur">
-            <StatsGrid />
+            <StatsGrid metrics={dashboardData?.metrics ?? []} />
           </div>
         </section>
 
@@ -172,7 +78,7 @@ export default async function DashboardPage() {
               </span>
             </div>
             <div className="mt-8 h-72 w-full">
-              <RatingTrendChart data={ratingsTrend} />
+              <RatingTrendChart data={dashboardData?.ratingTrend ?? []} />
             </div>
           </div>
 
@@ -187,7 +93,7 @@ export default async function DashboardPage() {
               </span>
             </div>
             <div className="mt-8 h-72 w-full">
-              <RatingDistributionChart data={ratingDistribution} />
+              <RatingDistributionChart data={dashboardData?.ratingDistribution ?? []} />
             </div>
           </div>
 
@@ -198,11 +104,11 @@ export default async function DashboardPage() {
                 <p className="text-sm text-slate-500">Explore the most recent feedback and spot shifts instantly</p>
               </div>
               <span className="inline-flex items-center rounded-full bg-slate-900/5 px-3 py-1 text-xs font-medium text-slate-600">
-                {recentRatings.length} total ratings
+                {dashboardData?.recentRatings.length ?? 0} total ratings
               </span>
             </div>
             <div className="mt-8">
-              <RecentRatingsAreaChart ratings={recentRatings} />
+              <RecentRatingsAreaChart ratings={dashboardData?.recentRatings ?? []} />
             </div>
           </div>
 
@@ -213,11 +119,11 @@ export default async function DashboardPage() {
                 <p className="text-sm text-slate-500">Review individual comments, search by rating, and spot outliers fast</p>
               </div>
               <span className="inline-flex items-center rounded-full bg-slate-900/5 px-3 py-1 text-xs font-medium text-slate-600">
-                {recentFeedback.length} feedback entries
+                {dashboardData?.recentFeedback.length ?? 0} feedback entries
               </span>
             </div>
             <div className="mt-8">
-              <RecentFeedbackTable feedback={recentFeedback} />
+              <RecentFeedbackTable feedback={dashboardData?.recentFeedback ?? []} />
             </div>
           </div>
         </section>
