@@ -285,18 +285,6 @@ export function RecentFeedbackTable({ feedback }: RecentFeedbackTableProps) {
           )}
         </TableBody>
       </Table>
-      <p className="text-center text-sm text-muted-foreground">
-        Data table with filters made with {" "}
-        <a
-          className="underline transition-colors hover:text-foreground"
-          href="https://tanstack.com/table"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          TanStack Table
-        </a>
-        .
-      </p>
       {selectedFeedback ? (
         <FeedbackDetailModal
           entry={selectedFeedback}
@@ -394,48 +382,52 @@ function Filter({ column }: { column: Column<FeedbackEntry, unknown> }) {
     return (
       <div className="space-y-2" ref={calendarContainerRef}>
         <Label htmlFor={`${id}-date-trigger`}>{columnHeader}</Label>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            id={`${id}-date-trigger`}
-            onClick={() => setIsCalendarOpen((open) => !open)}
-            className={cn(
-              "inline-flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200/80 bg-white px-3 py-2 text-left text-sm font-medium text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900",
-              hasSelection && "text-slate-900",
-            )}
-          >
-            <span className="inline-flex items-center gap-2">
-              <CalendarIcon className="size-4 text-slate-400" aria-hidden="true" />
-              {label}
-            </span>
-            <ChevronDownIcon className="size-4 text-slate-400" aria-hidden="true" />
-          </button>
-          {hasSelection ? (
+        <div className="relative">
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => {
-                column.setFilterValue(undefined);
-                setIsCalendarOpen(false);
-              }}
-              className="inline-flex items-center rounded-xl border border-transparent bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-500 transition hover:bg-slate-200 hover:text-slate-700"
+              id={`${id}-date-trigger`}
+              onClick={() => setIsCalendarOpen((open) => !open)}
+              className={cn(
+                "inline-flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200/80 bg-white px-3 py-2 text-left text-sm font-medium text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900",
+                hasSelection && "text-slate-900",
+              )}
             >
-              Clear
+              <span className="inline-flex items-center gap-2">
+                <CalendarIcon className="size-4 text-slate-400" aria-hidden="true" />
+                {label}
+              </span>
+              <ChevronDownIcon className="size-4 text-slate-400" aria-hidden="true" />
             </button>
+            {hasSelection ? (
+              <button
+                type="button"
+                onClick={() => {
+                  column.setFilterValue(undefined);
+                  setIsCalendarOpen(false);
+                }}
+                className="inline-flex items-center rounded-xl border border-transparent bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-500 transition hover:bg-slate-200 hover:text-slate-700"
+              >
+                Clear
+              </button>
+            ) : null}
+          </div>
+          {isCalendarOpen ? (
+            <div className="absolute left-0 top-full z-50 mt-2 min-w-[18rem]">
+              <div className="origin-top overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/95 p-3 shadow-xl">
+                <RangeCalendar
+                  value={dateRangeValue}
+                  onChange={(value) => {
+                    column.setFilterValue(value ?? undefined);
+                    if (value?.start && value?.end) {
+                      setIsCalendarOpen(false);
+                    }
+                  }}
+                />
+              </div>
+            </div>
           ) : null}
         </div>
-        {isCalendarOpen ? (
-          <div className="mt-3 origin-top overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/95 p-3 shadow-xl">
-            <RangeCalendar
-              value={dateRangeValue}
-              onChange={(value) => {
-                column.setFilterValue(value ?? undefined);
-                if (value?.start && value?.end) {
-                  setIsCalendarOpen(false);
-                }
-              }}
-            />
-          </div>
-        ) : null}
       </div>
     );
   }

@@ -210,7 +210,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-slate-900">Feedback details</h2>
-                <p className="text-sm text-slate-500">Review individual comments, search by theme, and spot outliers fast</p>
+                <p className="text-sm text-slate-500">Review individual comments, search by rating, and spot outliers fast</p>
               </div>
               <span className="inline-flex items-center rounded-full bg-slate-900/5 px-3 py-1 text-xs font-medium text-slate-600">
                 {recentFeedback.length} feedback entries
