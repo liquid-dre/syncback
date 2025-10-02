@@ -16,7 +16,7 @@ export function CallToActionSection() {
           </p>
         </div>
         <Link
-          href="#"
+          href="/sign-up"
           className="group inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-base font-semibold text-slate-900 shadow-xl transition hover:scale-[1.03] dark:bg-sky-500 dark:text-slate-900 dark:shadow-sky-500/40 dark:hover:bg-sky-400"
         >
           Create your free account
