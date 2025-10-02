@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import {
   IconArrowDownRight,
   IconArrowUpRight,
@@ -32,6 +33,13 @@ type StatsGridProps = {
   metrics: Metric[];
 };
 
+const iconBadgeVariants: Record<MetricIconKey, string> = {
+  rating: classes.iconBadgeRating,
+  volume: classes.iconBadgeVolume,
+  promoters: classes.iconBadgePromoters,
+  trends: classes.iconBadgeTrends,
+};
+
 export function StatsGrid({ metrics }: StatsGridProps) {
   if (metrics.length === 0) {
     return (
@@ -56,10 +64,10 @@ export function StatsGrid({ metrics }: StatsGridProps) {
     return (
       <Paper withBorder p="xl" radius="lg" key={stat.title} className={classes.card}>
         <div className={classes.header}>
-          <div className={classes.iconBadge}>
+          <div className={clsx(classes.iconBadge, iconBadgeVariants[stat.icon])}>
             <Icon className={classes.icon} size={20} stroke={1.5} />
           </div>
-          <div>
+          <div className={classes.headerText}>
             <Text size="sm" fw={600} className={classes.title}>
               {stat.title}
             </Text>
@@ -69,7 +77,7 @@ export function StatsGrid({ metrics }: StatsGridProps) {
           </div>
         </div>
 
-        <Group align="flex-end" justify="space-between" mt="lg">
+        <Group align="flex-end" justify="space-between" className={classes.metricRow}>
           <Text className={classes.value}>{stat.value}</Text>
           <div className={diffClassName}>
             <DiffIcon size={16} stroke={1.5} />
@@ -77,7 +85,7 @@ export function StatsGrid({ metrics }: StatsGridProps) {
           </div>
         </Group>
 
-        <Text fz="xs" c="dimmed" mt="lg" className={classes.footerText}>
+        <Text fz="xs" c="dimmed" className={classes.footerText}>
           Compared to last month
         </Text>
       </Paper>

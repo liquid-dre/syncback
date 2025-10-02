@@ -211,25 +211,11 @@ export const dashboardData = query({
 				? percentChange(currentFiveStarShare, previousFiveStarShare)
 				: 0;
 
-		const isResolved = (entry: FeedbackDoc) => entry.status !== "new";
-		const displayedResolvedEntries =
-			currentFeedback.length > 0 ? currentFeedback : allFeedback;
-		const displayedResolvedShare = percentageShare(
-			displayedResolvedEntries,
-			isResolved
-		);
-		const currentResolvedShare = percentageShare(currentFeedback, isResolved);
-		const previousResolvedShare = percentageShare(previousFeedback, isResolved);
-		const resolvedDiff =
-			currentFeedback.length > 0 && previousFeedback.length > 0
-				? percentChange(currentResolvedShare, previousResolvedShare)
-				: 0;
-
-		const currentVolume = currentFeedback.length;
-		const displayedVolume =
-			currentVolume > 0 ? currentVolume : allFeedback.length;
-		const volumeDiff =
-			currentVolume > 0
+                const currentVolume = currentFeedback.length;
+                const displayedVolume =
+                        currentVolume > 0 ? currentVolume : allFeedback.length;
+                const volumeDiff =
+                        currentVolume > 0
 				? percentChange(currentVolume, previousFeedback.length, {
 						allowInfinity: true,
 					})
@@ -251,19 +237,13 @@ export const dashboardData = query({
 							value: `${Math.round(displayedFiveStarShare)}%`,
 							diff: Math.round(fiveStarDiff),
 						},
-						{
-							title: "Feedback volume",
-							icon: "volume" as const,
-							value: displayedVolume.toString(),
-							diff: Math.round(volumeDiff),
-						},
-						{
-							title: "Follow-up resolved",
-							icon: "trends" as const,
-							value: `${Math.round(displayedResolvedShare)}%`,
-							diff: Math.round(resolvedDiff),
-						},
-					];
+                                                {
+                                                        title: "Feedback volume",
+                                                        icon: "volume" as const,
+                                                        value: displayedVolume.toString(),
+                                                        diff: Math.round(volumeDiff),
+                                                },
+                                        ];
 
 		const monthsToShow = 6;
 		const monthBuckets = new Map<string, { sum: number; count: number }>();

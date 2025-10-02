@@ -12,6 +12,10 @@
   border: 1px solid light-dark(rgba(226, 232, 240, 0.8), rgba(71, 85, 105, 0.5));
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-lg);
+  height: 100%;
 }
 
 .card::after {
@@ -55,6 +59,14 @@
   stroke-width: 1.5;
 }
 
+.headerText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: 3.25rem;
+}
+
 .title {
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -72,6 +84,10 @@
   color: light-dark(var(--mantine-color-dark-7), rgba(226, 232, 240, 0.98));
   position: relative;
   z-index: 1;
+}
+
+.metricRow {
+  margin-top: var(--mantine-spacing-lg);
 }
 
 .diffBadge {
@@ -99,4 +115,30 @@
 .footerText {
   position: relative;
   z-index: 1;
+  margin-top: auto;
+  padding-top: calc(var(--mantine-spacing-md) * 0.75);
+}
+
+.iconBadgeRating {
+  background: linear-gradient(135deg, #f97316, #facc15);
+  color: #fff;
+  box-shadow: 0 16px 28px rgba(249, 115, 22, 0.28);
+}
+
+.iconBadgeVolume {
+  background: linear-gradient(135deg, #3b82f6, #22d3ee);
+  color: #f8fafc;
+  box-shadow: 0 16px 28px rgba(59, 130, 246, 0.28);
+}
+
+.iconBadgePromoters {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: #f8fafc;
+  box-shadow: 0 16px 28px rgba(16, 185, 129, 0.28);
+}
+
+.iconBadgeTrends {
+  background: linear-gradient(135deg, #ec4899, #f472b6);
+  color: #fff;
+  box-shadow: 0 16px 28px rgba(236, 72, 153, 0.28);
 }
