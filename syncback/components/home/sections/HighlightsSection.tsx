@@ -32,7 +32,15 @@ export function HighlightsSection() {
       id="tour"
       className="js-section-perks rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-xl shadow-slate-900/5 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-slate-900/40"
     >
-      <ScrollStack className="h-[680px] max-h-[80vh] rounded-[28px] bg-transparent">
+      <ScrollStack
+        className="rounded-[28px] bg-transparent"
+        useWindowScroll
+        itemDistance={180}
+        itemStackDistance={20}
+        stackPosition="35%"
+        baseScale={0.65}
+        rotationAmount={0.4}
+      >
         {highlights.map(({ icon: Icon, title, description }) => (
           <ScrollStackItem
             key={title}
