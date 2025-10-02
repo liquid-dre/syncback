@@ -93,7 +93,17 @@ export function StatsGrid({ metrics }: StatsGridProps) {
   });
   return (
     <div className={classes.root}>
-      <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }}>{stats}</SimpleGrid>
+      <SimpleGrid
+        cols={{
+          base: 1,
+          xs: Math.min(2, metrics.length),
+          md: Math.min(3, metrics.length),
+          lg: Math.min(4, metrics.length),
+        }}
+        spacing="xl"
+      >
+        {stats}
+      </SimpleGrid>
     </div>
   );
 }
