@@ -11,6 +11,7 @@ import {
   type TablerIconsProps,
 } from "@tabler/icons-react";
 import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
+import CountUp from "@/components/shared/CountUp";
 import classes from "./StatsGrid.module.css";
 
 const icons = {
@@ -61,6 +62,14 @@ export function StatsGrid({ metrics }: StatsGridProps) {
         ? `${classes.diffBadge} ${classes.diffPositive}`
         : `${classes.diffBadge} ${classes.diffNegative}`;
 
+    const numericMatch = stat.value.match(/-?\d[\d,]*(?:\.\d+)?/);
+    const numericPortion = numericMatch?.[0] ?? null;
+    const prefix = numericMatch && numericMatch.index ? stat.value.slice(0, numericMatch.index) : "";
+    const suffix = numericMatch ? stat.value.slice((numericMatch.index ?? 0) + numericMatch[0].length) : "";
+    const numericValue = numericPortion !== null ? Number(numericPortion.replace(/,/g, "")) : undefined;
+    const hasThousandSeparator = numericPortion?.includes(",") ?? false;
+    const shouldAnimate = typeof numericValue === "number" && Number.isFinite(numericValue);
+
     return (
       <Paper withBorder p="xl" radius="lg" key={stat.title} className={classes.card}>
         <div className={classes.header}>
@@ -78,7 +87,22 @@ export function StatsGrid({ metrics }: StatsGridProps) {
         </div>
 
         <Group align="flex-end" justify="space-between" className={classes.metricRow}>
-          <Text className={classes.value}>{stat.value}</Text>
+          <Text className={classes.value}>
+            {shouldAnimate ? (
+              <>
+                {prefix}
+                <CountUp
+                  to={numericValue ?? 0}
+                  from={0}
+                  duration={1.4}
+                  separator={hasThousandSeparator ? "," : ""}
+                />
+                {suffix}
+              </>
+            ) : (
+              stat.value
+            )}
+          </Text>
           <div className={diffClassName}>
             <DiffIcon size={16} stroke={1.5} />
             <span>{Math.abs(stat.diff)}%</span>
