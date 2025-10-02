@@ -331,20 +331,25 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     updateCardTransforms,
   ]);
 
+  const containerClassName = `relative w-full ${
+    useWindowScroll ? "overflow-visible" : "h-full overflow-y-auto overflow-x-visible"
+  } ${className}`.trim();
+
+  const containerStyle = useWindowScroll
+    ? undefined
+    : {
+        overscrollBehavior: "contain" as const,
+        WebkitOverflowScrolling: "touch" as const,
+        scrollBehavior: "smooth" as const,
+        WebkitTransform: "translateZ(0)" as const,
+        transform: "translateZ(0)" as const,
+        willChange: "scroll-position" as const,
+      };
+
   return (
-    <div
-      className={`relative w-full h-full overflow-y-auto overflow-x-visible ${className}`.trim()}
-      ref={scrollerRef}
-      style={{
-        overscrollBehavior: "contain",
-        WebkitOverflowScrolling: "touch",
-        scrollBehavior: "smooth",
-        WebkitTransform: "translateZ(0)",
-        transform: "translateZ(0)",
-        willChange: "scroll-position",
-      }}
-    >
-      <div className="scroll-stack-inner pt-[20vh] px-20 pb-[50rem] min-h-screen">{children}
+    <div className={containerClassName} ref={useWindowScroll ? undefined : scrollerRef} style={containerStyle}>
+      <div className="scroll-stack-inner pt-[20vh] px-20 pb-[50rem] min-h-screen">
+        {children}
         {/* Spacer so the last pin can release cleanly */}
         <div className="scroll-stack-end w-full h-px" />
       </div>
