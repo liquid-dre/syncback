@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useLayoutEffect, useRef, useCallback } from "react";
+import React, { ReactNode, useLayoutEffect, useRef, useCallback, useEffect } from "react";
 import Lenis from "lenis";
 
 export interface ScrollStackItemProps {
@@ -36,6 +36,13 @@ interface ScrollStackProps {
   onStackComplete?: () => void;
 }
 
+interface TransformState {
+  translateY: number;
+  scale: number;
+  rotation: number;
+  blur: number;
+}
+
 const ScrollStack: React.FC<ScrollStackProps> = ({
   children,
   className = "",
@@ -56,7 +63,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
   const animationFrameRef = useRef<number | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
-  const lastTransformsRef = useRef(new Map<number, any>());
+  const lastTransformsRef = useRef(new Map<number, TransformState>());
   const isUpdatingRef = useRef(false);
 
   const calculateProgress = useCallback((scrollTop: number, start: number, end: number) => {
@@ -124,7 +131,11 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       const pinStart = cardTop - stackPositionPx - itemStackDistance * i;
       const pinEnd = endElementTop - containerHeight / 2;
 
-      const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
+      const isFirstCard = i === 0;
+      const adjustedTriggerStart = isFirstCard ? 0 : triggerStart;
+      const adjustedPinStart = isFirstCard ? 0 : pinStart;
+
+      const scaleProgress = calculateProgress(scrollTop, adjustedTriggerStart, triggerEnd);
       const targetScale = baseScale + i * itemScale;
       const scale = 1 - scaleProgress * (1 - targetScale);
       const rotation = rotationAmount ? i * rotationAmount * scaleProgress : 0;
@@ -147,9 +158,14 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       }
 
       let translateY = 0;
-      const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
+      const isPinned = scrollTop >= adjustedPinStart && scrollTop <= pinEnd;
 
-      if (isPinned) {
+      if (isFirstCard) {
+        translateY = scrollTop - cardTop + stackPositionPx + itemStackDistance * i;
+        if (scrollTop > pinEnd) {
+          translateY = pinEnd - cardTop + stackPositionPx + itemStackDistance * i;
+        }
+      } else if (isPinned) {
         translateY = scrollTop - cardTop + stackPositionPx + itemStackDistance * i;
       } else if (scrollTop > pinEnd) {
         translateY = pinEnd - cardTop + stackPositionPx + itemStackDistance * i;
@@ -181,7 +197,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       }
 
       if (i === cardsRef.current.length - 1) {
-        const isInView = scrollTop >= pinStart && scrollTop <= pinEnd;
+        const isInView = scrollTop >= adjustedPinStart && scrollTop <= pinEnd;
         if (isInView && !stackCompletedRef.current) {
           stackCompletedRef.current = true;
           onStackComplete?.();
@@ -211,6 +227,41 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
   const handleScroll = useCallback(() => {
     updateCardTransforms();
   }, [updateCardTransforms]);
+
+  useEffect(() => {
+    if (useWindowScroll) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleScroll);
+      };
+    }
+
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    scroller.addEventListener("scroll", handleScroll, { passive: true });
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        handleScroll();
+      });
+      resizeObserver.observe(scroller);
+    } else {
+      window.addEventListener("resize", handleScroll);
+    }
+
+    return () => {
+      scroller.removeEventListener("scroll", handleScroll);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", handleScroll);
+      }
+    };
+  }, [handleScroll, useWindowScroll]);
 
   const setupLenis = useCallback(() => {
     if (useWindowScroll) {
