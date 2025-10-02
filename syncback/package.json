@@ -16,6 +16,7 @@
     "@mantine/hooks": "^7.14.2",
     "@mantinex/mantine-logo": "^1.0.2",
     "@radix-ui/react-select": "^2.2.6",
+    "@studio-freight/lenis": "^1.0.42",
     "@tabler/icons-react": "^3.16.0",
     "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.1",
