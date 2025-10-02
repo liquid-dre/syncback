@@ -3,39 +3,100 @@
 }
 
 .card {
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition: transform 220ms ease, box-shadow 220ms ease;
   background: light-dark(
-    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 255, 0.7)),
-    linear-gradient(160deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.7))
+    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 255, 0.9)),
+    linear-gradient(170deg, rgba(8, 47, 73, 0.75), rgba(15, 23, 42, 0.85))
   );
-  box-shadow: light-dark(0 12px 30px rgba(15, 23, 42, 0.08), 0 14px 38px rgba(2, 6, 23, 0.45));
-  border: 1px solid light-dark(rgba(226, 232, 240, 0.7), rgba(71, 85, 105, 0.6));
+  box-shadow: light-dark(0 18px 40px rgba(15, 23, 42, 0.08), 0 24px 48px rgba(2, 6, 23, 0.55));
+  border: 1px solid light-dark(rgba(226, 232, 240, 0.8), rgba(71, 85, 105, 0.5));
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: auto 40% -45% -20%;
+  height: 120px;
+  background: light-dark(
+    radial-gradient(circle at center, rgba(14, 165, 233, 0.12), transparent 65%),
+    radial-gradient(circle at center, rgba(56, 189, 248, 0.2), transparent 70%)
+  );
+  pointer-events: none;
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: light-dark(0 18px 36px rgba(15, 23, 42, 0.12), 0 18px 42px rgba(8, 15, 35, 0.55));
+  transform: translateY(-6px);
+  box-shadow: light-dark(0 24px 50px rgba(15, 23, 42, 0.12), 0 30px 56px rgba(8, 15, 35, 0.6));
 }
 
-.value {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.diff {
-  line-height: 1;
+.header {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--mantine-spacing-md);
+  position: relative;
+  z-index: 1;
+}
+
+.iconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 999px;
+  background: light-dark(rgba(15, 23, 42, 0.92), rgba(8, 47, 73, 0.35));
+  color: light-dark(#fff, rgba(125, 211, 252, 0.9));
+  box-shadow: light-dark(0 12px 22px rgba(15, 23, 42, 0.22), 0 18px 32px rgba(2, 6, 23, 0.45));
 }
 
 .icon {
-  color: light-dark(var(--mantine-color-blue-4), rgba(125, 211, 252, 0.8));
+  stroke-width: 1.5;
 }
 
 .title {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: light-dark(var(--mantine-color-dark-7), rgba(226, 232, 240, 0.95));
+}
+
+.subtitle {
+  margin-top: 0.15rem;
+}
+
+.value {
+  font-size: 28px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  line-height: 1;
+  color: light-dark(var(--mantine-color-dark-7), rgba(226, 232, 240, 0.98));
+  position: relative;
+  z-index: 1;
+}
+
+.diffBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.diffPositive {
+  background: rgba(16, 185, 129, 0.14);
+  color: light-dark(#047857, #6ee7b7);
+}
+
+.diffNegative {
+  background: rgba(248, 113, 113, 0.16);
+  color: light-dark(#b91c1c, #fecaca);
+}
+
+.footerText {
+  position: relative;
+  z-index: 1;
 }

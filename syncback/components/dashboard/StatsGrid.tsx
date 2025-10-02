@@ -48,25 +48,36 @@ export function StatsGrid({ metrics }: StatsGridProps) {
   const stats = metrics.map((stat) => {
     const Icon = icons[stat.icon];
     const DiffIcon = stat.diff >= 0 ? IconArrowUpRight : IconArrowDownRight;
+    const diffClassName =
+      stat.diff >= 0
+        ? `${classes.diffBadge} ${classes.diffPositive}`
+        : `${classes.diffBadge} ${classes.diffNegative}`;
 
     return (
-      <Paper withBorder p="md" radius="md" key={stat.title} className={classes.card}>
-        <Group justify="space-between">
-          <Text size="xs" c="dimmed" className={classes.title}>
-            {stat.title}
-          </Text>
-          <Icon className={classes.icon} size={22} stroke={1.5} />
-        </Group>
+      <Paper withBorder p="xl" radius="lg" key={stat.title} className={classes.card}>
+        <div className={classes.header}>
+          <div className={classes.iconBadge}>
+            <Icon className={classes.icon} size={20} stroke={1.5} />
+          </div>
+          <div>
+            <Text size="sm" fw={600} className={classes.title}>
+              {stat.title}
+            </Text>
+            <Text size="xs" c="dimmed" className={classes.subtitle}>
+              Daily insight updates
+            </Text>
+          </div>
+        </div>
 
-        <Group align="flex-end" gap="xs" mt={25}>
+        <Group align="flex-end" justify="space-between" mt="lg">
           <Text className={classes.value}>{stat.value}</Text>
-          <Text c={stat.diff >= 0 ? "teal" : "red"} fz="sm" fw={500} className={classes.diff}>
-            <span>{stat.diff}%</span>
+          <div className={diffClassName}>
             <DiffIcon size={16} stroke={1.5} />
-          </Text>
+            <span>{Math.abs(stat.diff)}%</span>
+          </div>
         </Group>
 
-        <Text fz="xs" c="dimmed" mt={7}>
+        <Text fz="xs" c="dimmed" mt="lg" className={classes.footerText}>
           Compared to last month
         </Text>
       </Paper>
