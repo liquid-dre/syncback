@@ -61,10 +61,14 @@ const rangeLabelFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 });
 
+type ColumnFilterVariant<TData extends RowData, TValue> =
+  TData extends RowData
+    ? (TValue extends unknown ? "text" | "select" | "range" : never)
+    : never;
+
 declare module "@tanstack/react-table" {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: "text" | "select" | "range";
+    filterVariant?: ColumnFilterVariant<TData, TValue>;
     filterPlaceholder?: string;
   }
 }
