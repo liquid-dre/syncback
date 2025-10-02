@@ -109,7 +109,7 @@ export default async function FeedbackSuccessPage({
               Share another response
             </Link>
             <Link
-              href="https://syncback.app"
+              href="/"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300/70 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
             >
               Learn more about SyncBack

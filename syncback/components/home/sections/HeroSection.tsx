@@ -39,7 +39,7 @@ export function HeroSection({ isPulsing }: HeroSectionProps) {
         </p>
         <div className="flex flex-col gap-4 sm:flex-row">
           <Link
-            href="#get-started"
+            href="/sign-up"
             className="group inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-base font-medium text-white shadow-lg shadow-slate-900/20 transition hover:scale-[1.02] hover:bg-slate-800 dark:bg-sky-500 dark:text-slate-900 dark:shadow-sky-500/30 dark:hover:bg-sky-400"
           >
             Start for free
