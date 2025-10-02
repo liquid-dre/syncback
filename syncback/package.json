@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.33.1",
+    "@gsap/react": "^2.1.2",
     "@internationalized/date": "^3.9.0",
     "@mantine/core": "^7.14.2",
     "@mantine/hooks": "^7.14.2",
