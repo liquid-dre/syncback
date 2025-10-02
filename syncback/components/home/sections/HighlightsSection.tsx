@@ -33,8 +33,7 @@ export function HighlightsSection() {
       className="js-section-perks rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-xl shadow-slate-900/5 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-slate-900/40"
     >
       <ScrollStack
-        className="rounded-[28px] bg-transparent"
-        useWindowScroll
+        className="rounded-[28px] bg-transparent h-[28rem] max-h-[28rem]"
         itemDistance={180}
         itemStackDistance={20}
         stackPosition="35%"

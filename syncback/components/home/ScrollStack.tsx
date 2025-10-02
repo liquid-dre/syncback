@@ -335,6 +335,10 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     ? `relative w-full overflow-visible ${className}`.trim()
     : `relative w-full h-full overflow-y-auto overflow-x-visible ${className}`.trim();
 
+  const innerClassName = useWindowScroll
+    ? "scroll-stack-inner flex flex-col gap-8 pt-[20vh] px-20 pb-[40vh] min-h-screen"
+    : "scroll-stack-inner flex flex-col gap-8 px-6 py-10";
+
   const containerStyle = useWindowScroll
     ? undefined
     : {
@@ -352,7 +356,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       ref={useWindowScroll ? undefined : scrollerRef}
       style={containerStyle}
     >
-      <div className="scroll-stack-inner pt-[20vh] px-20 pb-[50rem] min-h-screen">
+      <div className={innerClassName}>
         {children}
         {/* Spacer so the last pin can release cleanly */}
         <div className="scroll-stack-end w-full h-px" />
