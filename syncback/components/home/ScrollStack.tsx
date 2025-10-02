@@ -3,13 +3,6 @@
 import React, { ReactNode, useLayoutEffect, useRef, useCallback } from "react";
 import Lenis from "lenis";
 
-type CardTransform = {
-  translateY: number;
-  scale: number;
-  rotation: number;
-  blur: number;
-};
-
 export interface ScrollStackItemProps {
   itemClassName?: string;
   children: ReactNode;
@@ -63,7 +56,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
   const animationFrameRef = useRef<number | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
-  const lastTransformsRef = useRef<Map<number, CardTransform>>(new Map());
+  const lastTransformsRef = useRef(new Map<number, any>());
   const isUpdatingRef = useRef(false);
 
   const calculateProgress = useCallback((scrollTop: number, start: number, end: number) => {
@@ -223,7 +216,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     if (useWindowScroll) {
       const lenis = new Lenis({
         duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
         touchMultiplier: 2,
         infinite: false,
@@ -252,7 +245,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       wrapper: scroller,
       content: scroller.querySelector(".scroll-stack-inner") as HTMLElement,
       duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 2,
       infinite: false,
@@ -331,32 +324,20 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     updateCardTransforms,
   ]);
 
-  const containerClassName = useWindowScroll
-    ? `relative w-full overflow-visible ${className}`.trim()
-    : `relative w-full h-full overflow-y-auto overflow-x-visible ${className}`.trim();
-
-  const innerClassName = useWindowScroll
-    ? "scroll-stack-inner flex flex-col gap-8 pt-[20vh] px-20 pb-[40vh] min-h-screen"
-    : "scroll-stack-inner flex flex-col gap-8 px-6 py-10";
-
-  const containerStyle = useWindowScroll
-    ? undefined
-    : {
-        overscrollBehavior: "contain" as const,
-        WebkitOverflowScrolling: "touch" as const,
-        scrollBehavior: "smooth" as const,
-        WebkitTransform: "translateZ(0)" as const,
-        transform: "translateZ(0)" as const,
-        willChange: "scroll-position" as const,
-      };
-
   return (
     <div
-      className={containerClassName}
-      ref={useWindowScroll ? undefined : scrollerRef}
-      style={containerStyle}
+      className={`relative w-full h-full overflow-y-auto overflow-x-visible ${className}`.trim()}
+      ref={scrollerRef}
+      style={{
+        overscrollBehavior: "contain",
+        WebkitOverflowScrolling: "touch",
+        scrollBehavior: "smooth",
+        WebkitTransform: "translateZ(0)",
+        transform: "translateZ(0)",
+        willChange: "scroll-position",
+      }}
     >
-      <div className={innerClassName}>
+      <div className="scroll-stack-inner pt-[20vh] px-20 pb-[50rem] min-h-screen">
         {children}
         {/* Spacer so the last pin can release cleanly */}
         <div className="scroll-stack-end w-full h-px" />
