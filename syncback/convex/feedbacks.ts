@@ -232,7 +232,7 @@ export const dashboardData = query({
 							diff: Math.round(averageDiff),
 						},
 						{
-							title: "5-star share",
+							title: "5-star share percentage",
 							icon: "promoters" as const,
 							value: `${Math.round(displayedFiveStarShare)}%`,
 							diff: Math.round(fiveStarDiff),
