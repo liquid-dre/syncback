@@ -53,11 +53,14 @@ export default async function DashboardPage() {
         <div className="grid gap-10 lg:grid-cols-2">
           <RatingTrendSection data={dashboardData?.ratingTrend ?? []} />
           <RatingDistributionSection data={dashboardData?.ratingDistribution ?? []} />
-          <RecentRatingsSection ratings={dashboardData?.recentRatings ?? []} totalCount={dashboardData?.recentRatings.length ?? 0} />
-          <RecentFeedbackSection
-            feedback={dashboardData?.recentFeedback ?? []}
-            totalCount={dashboardData?.recentFeedback.length ?? 0}
-          />
+        <RecentRatingsSection
+          ratings={dashboardData?.recentRatings ?? []}
+          totalCount={dashboardData?.totalFeedbackCount ?? 0}
+        />
+        <RecentFeedbackSection
+          feedback={dashboardData?.recentFeedback ?? []}
+          totalCount={dashboardData?.totalFeedbackCount ?? 0}
+        />
         </div>
       </main>
     </div>

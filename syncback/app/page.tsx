@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { CallToActionSection } from "@/components/home/sections/CallToActionSection";
 import { FooterSection } from "@/components/home/sections/FooterSection";
@@ -36,51 +34,75 @@ export default function Home() {
       return undefined;
     }
 
-    gsap.registerPlugin(ScrollTrigger);
+    let cancelled = false;
+    let cleanup: (() => void) | undefined;
 
-    const ctx = gsap.context(() => {
-      const heroSection = gsap.utils.toArray<HTMLElement>(".js-section-hero")[0];
-      if (heroSection) {
-        gsap.from(heroSection, {
-          autoAlpha: 0,
-          y: 60,
-          duration: 1.1,
-          ease: "power3.out",
-        });
+    const runAnimations = async () => {
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+
+      if (cancelled || !mainRef.current) {
+        return;
       }
 
-      const sectionSelectors = [
-        ".js-section-perks",
-        ".js-section-workflow",
-        ".js-section-testimonials",
-        ".js-section-cta",
-      ];
+      gsap.registerPlugin(ScrollTrigger);
 
-      sectionSelectors.forEach((selector) => {
-        gsap.utils.toArray<HTMLElement>(selector).forEach((section) => {
-          ScrollTrigger.create({
-            trigger: section,
-            start: "top 80%",
-            once: true,
-            onEnter: () => {
-              gsap.fromTo(
-                section,
-                { autoAlpha: 0, y: 60 },
-                {
-                  autoAlpha: 1,
-                  y: 0,
-                  duration: 1.1,
-                  ease: "power3.out",
-                  immediateRender: false,
-                },
-              );
-            },
+      const ctx = gsap.context(() => {
+        const heroSection = gsap.utils.toArray<HTMLElement>(".js-section-hero")[0];
+        if (heroSection) {
+          gsap.from(heroSection, {
+            autoAlpha: 0,
+            y: 60,
+            duration: 1.1,
+            ease: "power3.out",
+          });
+        }
+
+        const sectionSelectors = [
+          ".js-section-perks",
+          ".js-section-workflow",
+          ".js-section-testimonials",
+          ".js-section-cta",
+        ];
+
+        sectionSelectors.forEach((selector) => {
+          gsap.utils.toArray<HTMLElement>(selector).forEach((section) => {
+            ScrollTrigger.create({
+              trigger: section,
+              start: "top 80%",
+              once: true,
+              onEnter: () => {
+                gsap.fromTo(
+                  section,
+                  { autoAlpha: 0, y: 60 },
+                  {
+                    autoAlpha: 1,
+                    y: 0,
+                    duration: 1.1,
+                    ease: "power3.out",
+                    immediateRender: false,
+                  },
+                );
+              },
+            });
           });
         });
-      });
-    }, mainRef);
+      }, mainRef);
 
-    return () => ctx.revert();
+      cleanup = () => ctx.revert();
+    };
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      void runAnimations();
+    });
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(animationFrameId);
+      cleanup?.();
+    };
   }, []);
 
   return (

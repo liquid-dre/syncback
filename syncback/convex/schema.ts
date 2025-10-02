@@ -50,6 +50,17 @@ export default defineSchema({
     date: v.string(),
     count: v.number(),
     avgRating: v.number(),
+    sumRating: v.number(),
+    fiveStarCount: v.number(),
     createdAt: v.number(),
   }).index("by_businessId_date", ["businessId", "date"]),
+
+  aggregates_summary: defineTable({
+    businessId: v.id("businesses"),
+    totalCount: v.number(),
+    totalRatingSum: v.number(),
+    fiveStarCount: v.number(),
+    ratingBuckets: v.array(v.number()),
+    lastFeedbackAt: v.number(),
+  }).index("by_businessId", ["businessId"]),
 });
