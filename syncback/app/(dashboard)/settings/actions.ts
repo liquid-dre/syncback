@@ -46,7 +46,7 @@ export async function resolveAppUrl() {
     return envUrl.replace(/\/$/, "");
   }
 
-  const headerList = headers();
+  const headerList = await headers();
   const host = headerList.get("host");
   if (host) {
     const protocol = headerList.get("x-forwarded-proto") ?? "https";

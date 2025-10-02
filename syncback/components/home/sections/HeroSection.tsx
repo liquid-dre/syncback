@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Mail, MessageCircle, QrCode, Sparkles, Star } from "lucide-react";
 
+import SplitText from "@/components/shared/SplitText";
+
 const floatingStats = [
   { label: "More in-moment feedback", value: "+42%" },
   { label: "Avg. setup time", value: "2 min" },
@@ -27,7 +29,8 @@ export function HeroSection({ isPulsing }: HeroSectionProps) {
             aria-hidden
           />
           <h1 className="relative text-4xl font-semibold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl lg:text-6xl">
-            Close the feedback loop the moment customers scan with SyncBack.
+            Close the feedback loop the moment customers scan with{" "}
+            <SplitText text="SyncBack." tag="span" textAlign="left" />
           </h1>
         </div>
         <p className="max-w-xl text-lg text-slate-600 dark:text-slate-300 sm:text-xl">
