@@ -50,8 +50,8 @@ export default defineSchema({
     date: v.string(),
     count: v.number(),
     avgRating: v.number(),
-    sumRating: v.number(),
-    fiveStarCount: v.number(),
+    sumRating: v.optional(v.number()),
+    fiveStarCount: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_businessId_date", ["businessId", "date"]),
 
