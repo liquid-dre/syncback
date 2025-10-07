@@ -2,31 +2,17 @@
 
 import clsx from "clsx";
 
-import {
-  IconBook,
-  IconChartPie3,
-  IconChevronDown,
-  IconCode,
-  IconCoin,
-  IconFingerprint,
-  IconNotification,
-  IconRefresh,
-  type IconProps,
-} from "@tabler/icons-react";
-import type { ReactElement } from "react";
+import { IconRefresh } from "@tabler/icons-react";
 import {
   Box,
   Burger,
   Button,
-  Center,
-  Collapse,
   Divider,
   Drawer,
   Group,
   ScrollArea,
   Text,
   ThemeIcon,
-  UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
@@ -36,73 +22,13 @@ import classes from "./HeaderMegaMenu.module.css";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { useTheme } from "@/lib/theme-context";
 
-type MockDataItem = {
-  icon: (props: IconProps) => ReactElement;
-  title: string;
-  description: string;
-} 
-
-const mockdata: MockDataItem[] = [
-  {
-    icon: IconCode,
-    title: "Open source",
-    description: "This Pokémon’s cry is very loud and distracting",
-  },
-  {
-    icon: IconCoin,
-    title: "Free for everyone",
-    description: "The fluid of Smeargle’s tail secretions changes",
-  },
-  {
-    icon: IconBook,
-    title: "Documentation",
-    description: "Yanma is capable of seeing 360 degrees without",
-  },
-  {
-    icon: IconFingerprint,
-    title: "Security",
-    description: "The shell’s rounded shape and the grooves on its.",
-  },
-  {
-    icon: IconChartPie3,
-    title: "Analytics",
-    description: "This Pokémon uses its flying ability to quickly chase",
-  },
-  {
-    icon: IconNotification,
-    title: "Notifications",
-    description: "Combusken battles with the intensely hot flames it spews",
-  },
-];
-
 export function HeaderMegaMenu() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
-  const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const theme = useMantineTheme();
   const { isDark, themeClassName } = useTheme();
 
   const accentColor = isDark ? theme.white : theme.colors.blue[6];
-  const subtleAccentColor = isDark ? theme.colors.blue[2] : theme.colors.blue[6];
   const brandIconVariant = isDark ? "filled" : "light";
-  const featureIconVariant = isDark ? "filled" : "default";
-
-  const links = mockdata.map((item) => (
-    <UnstyledButton className={classes.subLink} key={item.title}>
-      <Group wrap="nowrap" align="flex-start">
-        <ThemeIcon size={34} variant={featureIconVariant} radius="md" color="blue">
-          <item.icon size={22} color={accentColor} />
-        </ThemeIcon>
-        <div>
-          <Text size="sm" fw={500}>
-            {item.title}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {item.description}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
-  ));
 
   return (
     <Box pb={24} className={clsx(themeClassName)}>
@@ -173,22 +99,6 @@ export function HeaderMegaMenu() {
               Settings
             </Link>
           </SignedIn>
-          <UnstyledButton className={classes.link} onClick={toggleLinks}>
-            <Center inline>
-              <Box component="span" mr={5}>
-                Features
-              </Box>
-              <IconChevronDown size={16} color={subtleAccentColor} />
-            </Center>
-          </UnstyledButton>
-          <Collapse in={linksOpened}>{links}</Collapse>
-          <a href="#" className={classes.link}>
-            Learn
-          </a>
-          <a href="#" className={classes.link}>
-            Academy
-          </a>
-
           <Divider my="sm" />
 
           <Group justify="flex-start" px="md" pb="md">
