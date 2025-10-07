@@ -6,6 +6,7 @@ export default function SignUpPage() {
       <SignUp
         routing="path"
         signInUrl="/sign-in"
+        path="/sign-up"
         afterSignUpUrl="/settings"
       />
     </div>
