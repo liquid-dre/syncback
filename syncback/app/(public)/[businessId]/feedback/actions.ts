@@ -48,7 +48,7 @@ export async function submitFeedback(
     };
   }
 
-  const headerList = headers();
+  const headerList = await headers();
   const ipAddress = headerList.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
 
   const ipHash = ipAddress
