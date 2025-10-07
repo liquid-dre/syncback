@@ -11,8 +11,8 @@ import {
   IconFingerprint,
   IconNotification,
   IconRefresh,
-  IconProps,
 } from "@tabler/icons-react";
+import type { IconProps } from "@tabler/icons-react";
 import {
   Box,
   Burger,
