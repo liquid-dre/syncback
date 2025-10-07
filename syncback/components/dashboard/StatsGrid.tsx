@@ -8,7 +8,7 @@ import {
   IconMoodSmile,
   IconStars,
   IconTrendingUp,
-  type TablerIconsProps,
+  type IconProps,
 } from "@tabler/icons-react";
 import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
 import CountUp from "@/components/shared/CountUp";
@@ -19,7 +19,7 @@ const icons = {
   volume: IconMessage2,
   promoters: IconMoodSmile,
   trends: IconTrendingUp,
-} satisfies Record<string, (props: TablerIconsProps) => JSX.Element>;
+} satisfies Record<string, (props: IconProps) => JSX.Element>;
 
 type MetricIconKey = keyof typeof icons;
 
