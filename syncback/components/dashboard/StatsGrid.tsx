@@ -10,6 +10,7 @@ import {
   IconTrendingUp,
   type IconProps,
 } from "@tabler/icons-react";
+import type { ComponentType } from "react";
 import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
 import CountUp from "@/components/shared/CountUp";
 import classes from "./StatsGrid.module.css";
@@ -19,7 +20,7 @@ const icons = {
   volume: IconMessage2,
   promoters: IconMoodSmile,
   trends: IconTrendingUp,
-} satisfies Record<string, (props: IconProps) => JSX.Element>;
+} satisfies Record<string, ComponentType<IconProps>>;
 
 type MetricIconKey = keyof typeof icons;
 

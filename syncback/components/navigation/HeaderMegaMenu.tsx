@@ -11,7 +11,7 @@ import {
   IconFingerprint,
   IconNotification,
   IconRefresh,
-  TablerIconsProps,
+  IconProps,
 } from "@tabler/icons-react";
 import {
   Box,
@@ -36,7 +36,7 @@ import { DarkModeToggle } from "./DarkModeToggle";
 import { useTheme } from "@/lib/theme-context";
 
 type MockDataItem = {
-  icon: (props: TablerIconsProps) => JSX.Element;
+  icon: (props: IconProps) => JSX.Element;
   title: string;
   description: string;
 };
