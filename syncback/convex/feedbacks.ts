@@ -182,7 +182,7 @@ export const dashboardData = query({
         .query("feedbacks")
         .withIndex("by_businessId_createdAt", (q) => q.eq("businessId", args.businessId))
         .order("desc")
-        .paginate({ numItems: 200 }),
+        .paginate({ cursor: null, numItems: 200 }),
     ]);
 
     const recentFeedbackDocs = recentFeedbackPage.page;
@@ -231,7 +231,7 @@ export const dashboardData = query({
         break;
       }
 
-      cursor = page.continueCursor ?? undefined;
+      cursor = page.continueCursor ?? null;
     }
 
     const dailyWithTimestamp = dailyAggregates.map((entry) => ({
