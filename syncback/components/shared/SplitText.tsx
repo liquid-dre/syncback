@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText as GSAPSplitText } from "gsap/SplitText";
@@ -41,6 +41,9 @@ const SplitText: React.FC<SplitTextProps> = ({
 }) => {
 	type TagElement = HTMLHeadingElement | HTMLParagraphElement | HTMLSpanElement;
 	const ref = useRef<TagElement | null>(null);
+  const setRef = useCallback((node: TagElement | null) => {
+		ref.current = node;
+	}, []);
 	const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -164,49 +167,49 @@ const SplitText: React.FC<SplitTextProps> = ({
 		switch (tag) {
 			case "h1":
 				return (
-					<h1 ref={ref} style={style} className={classes}>
+					<h1 ref={setRef} style={style} className={classes}>
 						{text}
 					</h1>
 				);
 			case "h2":
 				return (
-					<h2 ref={ref} style={style} className={classes}>
+					<h2 ref={setRef} style={style} className={classes}>
 						{text}
 					</h2>
 				);
 			case "h3":
 				return (
-					<h3 ref={ref} style={style} className={classes}>
+					<h3 ref={setRef} style={style} className={classes}>
 						{text}
 					</h3>
 				);
 			case "h4":
 				return (
-					<h4 ref={ref} style={style} className={classes}>
+					<h4 ref={setRef} style={style} className={classes}>
 						{text}
 					</h4>
 				);
 			case "h5":
 				return (
-					<h5 ref={ref} style={style} className={classes}>
+					<h5 ref={setRef} style={style} className={classes}>
 						{text}
 					</h5>
 				);
 			case "h6":
 				return (
-					<h6 ref={ref} style={style} className={classes}>
+					<h6 ref={setRef} style={style} className={classes}>
 						{text}
 					</h6>
 				);
 			case "span":
 				return (
-					<span ref={ref} style={style} className={classes}>
+					<span ref={setRef} style={style} className={classes}>
 						{text}
 					</span>
 				);
 			default:
 				return (
-					<p ref={ref} style={style} className={classes}>
+					<p ref={setRef} style={style} className={classes}>
 						{text}
 					</p>
 				);
