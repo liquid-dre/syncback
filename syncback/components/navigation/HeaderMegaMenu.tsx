@@ -11,8 +11,9 @@ import {
   IconFingerprint,
   IconNotification,
   IconRefresh,
+  type IconProps,
 } from "@tabler/icons-react";
-import type { IconProps } from "@tabler/icons-react";
+import type { ReactElement } from "react";
 import {
   Box,
   Burger,
@@ -36,10 +37,10 @@ import { DarkModeToggle } from "./DarkModeToggle";
 import { useTheme } from "@/lib/theme-context";
 
 type MockDataItem = {
-  icon: (props: IconProps) => JSX.Element;
+  icon: (props: IconProps) => ReactElement;
   title: string;
   description: string;
-};
+} 
 
 const mockdata: MockDataItem[] = [
   {
