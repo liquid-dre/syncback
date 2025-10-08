@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   PerformanceOverviewSection,
@@ -15,6 +16,7 @@ import { RecentFeedbackSection, type RecentFeedbackSectionProps } from "./sectio
 import { RecentRatingsSection, type RecentRatingsSectionProps } from "./sections/RecentRatingsSection";
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
+const REQUEST_TIMEOUT_MS = 15_000;
 
 type DashboardData = {
   metrics: PerformanceOverviewSectionProps["metrics"];
@@ -42,6 +44,7 @@ export function DashboardContent({
   initialDashboardData,
   initialHasConvexError,
 }: DashboardContentProps) {
+  const router = useRouter();
   const [businessName, setBusinessName] = useState(initialBusinessName);
   const [dashboardData, setDashboardData] = useState<DashboardData>(initialDashboardData);
   const [hasConvexError, setHasConvexError] = useState(initialHasConvexError);
@@ -51,6 +54,18 @@ export function DashboardContent({
   const activeRequest = useRef<AbortController | null>(null);
   const isMounted = useRef(true);
   const isReloadingRef = useRef(false);
+
+  useEffect(() => {
+    setBusinessName(initialBusinessName);
+  }, [initialBusinessName]);
+
+  useEffect(() => {
+    setDashboardData(initialDashboardData);
+  }, [initialDashboardData]);
+
+  useEffect(() => {
+    setHasConvexError(initialHasConvexError);
+  }, [initialHasConvexError]);
 
   useEffect(() => {
     if (!initialHasConvexError && initialDashboardData) {
@@ -71,6 +86,11 @@ export function DashboardContent({
     }
 
     const controller = new AbortController();
+    let didTimeout = false;
+    const timeoutId = window.setTimeout(() => {
+      didTimeout = true;
+      controller.abort();
+    }, REQUEST_TIMEOUT_MS);
     activeRequest.current?.abort();
     activeRequest.current = controller;
     isReloadingRef.current = true;
@@ -103,16 +123,24 @@ export function DashboardContent({
         setDashboardData(payload.dashboardData);
       }
     } catch (error) {
-      if ((error as Error).name === "AbortError") {
+      const abortError = error as Error;
+      const isAbortError = abortError.name === "AbortError";
+
+      if (isAbortError && !didTimeout) {
         return;
       }
 
-      console.error("Failed to refresh dashboard data", error);
+      const logMessage = didTimeout
+        ? "Dashboard refresh request timed out"
+        : "Failed to refresh dashboard data";
+      console.error(logMessage, error);
 
       if (isMounted.current) {
         setHasConvexError(true);
+        router.refresh();
       }
     } finally {
+      window.clearTimeout(timeoutId);
       if (isMounted.current) {
         setIsReloading(false);
       }
@@ -123,7 +151,7 @@ export function DashboardContent({
 
       isReloadingRef.current = false;
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
