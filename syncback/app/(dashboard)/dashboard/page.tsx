@@ -23,21 +23,34 @@ export default async function DashboardPage() {
   const convex = getConvexClient();
   const appUrl = await resolveAppUrl();
 
-  const business = await convex
-    .query(api.businesses.forClerkUser, {
+  let hasConvexError = false;
+
+  let business: Awaited<ReturnType<typeof convex.query>> | null = null;
+
+  try {
+    business = await convex.query(api.businesses.forClerkUser, {
       clerkUserId: user.id,
       appUrl,
-    })
-    .catch(() => null);
+    });
+  } catch (error) {
+    hasConvexError = true;
+    console.error("Failed to load business for dashboard", error);
+  }
+
+  let dashboardData: Awaited<ReturnType<typeof convex.query>> | null = null;
+
+  if (business) {
+    try {
+      dashboardData = await convex.query(api.feedbacks.dashboardData, {
+        businessId: business._id,
+      });
+    } catch (error) {
+      hasConvexError = true;
+      console.error("Failed to load dashboard data", error);
+    }
+  }
 
   const businessName = business?.name ?? "Your business";
-  const dashboardData = business
-    ? await convex
-        .query(api.feedbacks.dashboardData, {
-          businessId: business._id,
-        })
-        .catch(() => null)
-    : null;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f5f7ff] text-slate-950 dark:bg-slate-950 dark:text-slate-100">
@@ -49,10 +62,15 @@ export default async function DashboardPage() {
       </PageBackground>
 
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-24 pt-20 sm:px-8 lg:px-12">
-        <PerformanceOverviewSection businessName={businessName} metrics={dashboardData?.metrics ?? []} />
+        <PerformanceOverviewSection
+          businessName={businessName}
+          metrics={dashboardData?.metrics ?? []}
+          hasConvexError={hasConvexError}
+        />
         <div className="grid gap-10 lg:grid-cols-2">
           <RatingTrendSection data={dashboardData?.ratingTrend ?? []} />
           <RatingDistributionSection data={dashboardData?.ratingDistribution ?? []} />
+        </div>
         <RecentRatingsSection
           ratings={dashboardData?.recentRatings ?? []}
           totalCount={dashboardData?.totalFeedbackCount ?? 0}
@@ -61,7 +79,6 @@ export default async function DashboardPage() {
           feedback={dashboardData?.recentFeedback ?? []}
           totalCount={dashboardData?.totalFeedbackCount ?? 0}
         />
-        </div>
       </main>
     </div>
   );
