@@ -1,17 +1,13 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { PerformanceOverviewSection } from "./sections/PerformanceOverviewSection";
-import { RatingDistributionSection } from "./sections/RatingDistributionSection";
-import { RatingTrendSection } from "./sections/RatingTrendSection";
-import { RecentFeedbackSection } from "./sections/RecentFeedbackSection";
-import { RecentRatingsSection } from "./sections/RecentRatingsSection";
 import { HeaderMegaMenu } from "@/components/navigation/HeaderMegaMenu";
 import { PageBackground } from "@/components/shared/PageBackground";
 import { api } from "@/convex/_generated/api";
 import { getConvexClient } from "@/lib/convexClient";
 
 import { resolveAppUrl } from "../settings/actions";
+import { DashboardContent } from "./DashboardContent";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -61,25 +57,11 @@ export default async function DashboardPage() {
         <div className="absolute left-[10%] bottom-[18%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,_rgba(16,185,129,0.28),_rgba(255,255,255,0))] blur-3xl" />
       </PageBackground>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-24 pt-20 sm:px-8 lg:px-12">
-        <PerformanceOverviewSection
-          businessName={businessName}
-          metrics={dashboardData?.metrics ?? []}
-          hasConvexError={hasConvexError}
-        />
-        <div className="grid gap-10 lg:grid-cols-2">
-          <RatingTrendSection data={dashboardData?.ratingTrend ?? []} />
-          <RatingDistributionSection data={dashboardData?.ratingDistribution ?? []} />
-        </div>
-        <RecentRatingsSection
-          ratings={dashboardData?.recentRatings ?? []}
-          totalCount={dashboardData?.totalFeedbackCount ?? 0}
-        />
-        <RecentFeedbackSection
-          feedback={dashboardData?.recentFeedback ?? []}
-          totalCount={dashboardData?.totalFeedbackCount ?? 0}
-        />
-      </main>
+      <DashboardContent
+        initialBusinessName={businessName}
+        initialDashboardData={dashboardData}
+        initialHasConvexError={hasConvexError}
+      />
     </div>
   );
 }
