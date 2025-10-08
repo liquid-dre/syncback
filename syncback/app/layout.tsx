@@ -1,5 +1,5 @@
 import "@mantine/core/styles.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { ColorSchemeScript } from "@mantine/core";
 
@@ -62,11 +62,12 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: ["/og-image.svg"],
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 const structuredData = {
@@ -127,8 +128,10 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.className} antialiased`} suppressHydrationWarning>
-        <Providers>{children}
-        <Analytics /></Providers>
+        <Providers>
+          {children}
+          <Analytics />
+        </Providers>
       </body>
     </html>
   );
