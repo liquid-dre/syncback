@@ -15,6 +15,7 @@ type RatingDistributionDatum = {
   segment: string;
   value: number;
   label: string;
+  share?: number;
 };
 
 type RatingDistributionChartProps = {
@@ -36,7 +37,7 @@ export function RatingDistributionChart({ data }: RatingDistributionChartProps) 
       Number.isFinite(entry.value) ? Math.max(currentMax, entry.value) : currentMax,
     0,
   );
-  const domainMax = Math.max(10, Math.ceil((maxValue + 5) / 10) * 10);
+  const domainMax = maxValue <= 0 ? 5 : Math.max(5, Math.ceil(maxValue / 5) * 5);
 
   return (
     <ResponsiveContainer width="100%" height="100%" className="text-slate-500 dark:text-slate-300">
@@ -66,7 +67,16 @@ export function RatingDistributionChart({ data }: RatingDistributionChartProps) 
         />
         <Tooltip
           contentStyle={tooltipStyles}
-          formatter={(value: number) => [`${value}%`, "Share"]}
+          formatter={(value: number, _name, payload) => {
+            const datum = payload?.payload as RatingDistributionDatum | undefined;
+            const share = datum?.share ?? 0;
+            const ratingLabel = value === 1 ? "rating" : "ratings";
+            const shareDisplay = share > 0 ? share.toFixed(1) : "0";
+            return [
+              `${value} ${ratingLabel} (${shareDisplay}% share)`,
+              "Ratings",
+            ];
+          }}
           labelFormatter={(label: string, payload) => {
             const firstDatum = payload?.[0]?.payload as RatingDistributionDatum | undefined;
             if (firstDatum) {

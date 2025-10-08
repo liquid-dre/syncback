@@ -393,10 +393,9 @@ export const dashboardData = query({
       return {
         segment: displayValue,
         label: `${displayValue} ${label}`,
-        value:
-          summaryTotals.totalCount === 0
-            ? 0
-            : Math.round((count / summaryTotals.totalCount) * 100),
+        value: count,
+        share:
+          summaryTotals.totalCount === 0 ? 0 : (count / summaryTotals.totalCount) * 100,
       };
     });
 
