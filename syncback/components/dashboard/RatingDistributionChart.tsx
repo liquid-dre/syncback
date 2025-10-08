@@ -14,6 +14,7 @@ import {
 type RatingDistributionDatum = {
   segment: string;
   value: number;
+  label: string;
 };
 
 type RatingDistributionChartProps = {
@@ -66,6 +67,20 @@ export function RatingDistributionChart({ data }: RatingDistributionChartProps) 
         <Tooltip
           contentStyle={tooltipStyles}
           formatter={(value: number) => [`${value}%`, "Share"]}
+          labelFormatter={(label: string, payload) => {
+            const firstDatum = payload?.[0]?.payload as RatingDistributionDatum | undefined;
+            if (firstDatum) {
+              return firstDatum.label;
+            }
+            const parsedLabel = Number.parseFloat(label);
+            if (Number.isFinite(parsedLabel)) {
+              const isSingular = Math.abs(parsedLabel - 1) < 1e-8;
+              return `${Number.isInteger(parsedLabel) ? parsedLabel : parsedLabel.toFixed(1)} ${
+                isSingular ? "Star" : "Stars"
+              }`;
+            }
+            return label;
+          }}
           labelStyle={{
             color: "rgba(226, 232, 240, 0.8)",
             fontSize: 12,

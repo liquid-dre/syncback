@@ -34,13 +34,51 @@ function percentChange(current: number, previous: number, { allowInfinity = fals
   return ((current - previous) / Math.abs(previous)) * 100;
 }
 
+const HALF_STAR_BUCKET_COUNT = 10;
+
+function createEmptyBuckets() {
+  return new Array(HALF_STAR_BUCKET_COUNT).fill(0);
+}
+
 function ensureRatingBuckets(buckets?: number[]) {
-  const base = buckets && buckets.length === 6 ? buckets.slice() : new Array(6).fill(0);
-  return base.map((value) => (Number.isFinite(value) ? value : 0));
+  if (!Array.isArray(buckets) || buckets.length === 0) {
+    return createEmptyBuckets();
+  }
+
+  if (buckets.length === HALF_STAR_BUCKET_COUNT) {
+    return buckets.map((value) => (Number.isFinite(value) ? value : 0));
+  }
+
+  if (buckets.length === 6) {
+    const migrated = createEmptyBuckets();
+    for (let index = 1; index < buckets.length; index += 1) {
+      const value = Number.isFinite(buckets[index]) ? buckets[index] : 0;
+      if (value === 0) {
+        continue;
+      }
+      const targetIndex = Math.min(HALF_STAR_BUCKET_COUNT - 1, index * 2 - 1);
+      migrated[targetIndex] = value;
+    }
+    return migrated;
+  }
+
+  const normalized = createEmptyBuckets();
+  for (let index = 0; index < Math.min(buckets.length, HALF_STAR_BUCKET_COUNT); index += 1) {
+    const value = Number.isFinite(buckets[index]) ? buckets[index] : 0;
+    normalized[index] = value;
+  }
+
+  return normalized;
 }
 
 function ratingBucket(rating: number) {
-  return Math.min(5, Math.max(1, Math.round(Number.isFinite(rating) ? rating : 0)));
+  if (!Number.isFinite(rating)) {
+    return 0;
+  }
+
+  const clamped = Math.min(5, Math.max(0.5, rating));
+  const index = Math.round(clamped * 2 - 1);
+  return Math.min(HALF_STAR_BUCKET_COUNT - 1, Math.max(0, index));
 }
 
 function aggregateSummary(summary: SummaryAggregateDoc | null) {
@@ -95,7 +133,7 @@ export const submit = mutation({
 
     const timestamp = Date.now();
     const ratingBucketIndex = ratingBucket(args.rating);
-    const fiveStarIncrement = ratingBucketIndex === 5 ? 1 : 0;
+    const fiveStarIncrement = Math.abs(args.rating - 5) < 1e-8 ? 1 : 0;
 
     const feedbackId = await ctx.db.insert("feedbacks", {
       businessId: business._id,
@@ -347,10 +385,14 @@ export const dashboardData = query({
       return { month: label, average: Math.round(average * 100) / 100 };
     });
 
-    const ratingDistribution = [1, 2, 3, 4, 5].map((stars) => {
-      const count = summaryTotals.ratingBuckets[stars] ?? 0;
+    const ratingDistributionBuckets = Array.from({ length: HALF_STAR_BUCKET_COUNT }, (_, index) => 0.5 + index * 0.5);
+    const ratingDistribution = ratingDistributionBuckets.map((stars, index) => {
+      const count = summaryTotals.ratingBuckets[index] ?? 0;
+      const displayValue = Number.isInteger(stars) ? String(stars) : stars.toFixed(1);
+      const label = Math.abs(stars - 1) < 1e-8 ? "Star" : "Stars";
       return {
-        segment: `${stars} Star${stars === 1 ? "" : "s"}`,
+        segment: displayValue,
+        label: `${displayValue} ${label}`,
         value:
           summaryTotals.totalCount === 0
             ? 0
