@@ -173,19 +173,21 @@ export const dashboardData = query({
     businessId: v.id("businesses"),
   },
   handler: async (ctx, args) => {
-    const [summary, recentFeedbackPage] = await Promise.all([
-      ctx.db
-        .query("aggregates_summary")
-        .withIndex("by_businessId", (q) => q.eq("businessId", args.businessId))
-        .unique(),
-      ctx.db
-        .query("feedbacks")
-        .withIndex("by_businessId_createdAt", (q) => q.eq("businessId", args.businessId))
-        .order("desc")
-        .paginate({ cursor: null, numItems: 200 }),
-    ]);
+    const summaryPromise = ctx.db
+      .query("aggregates_summary")
+      .withIndex("by_businessId", (q) => q.eq("businessId", args.businessId))
+      .unique();
 
-    const recentFeedbackDocs = recentFeedbackPage.page;
+    const recentFeedbackPromise = ctx.db
+      .query("feedbacks")
+      .withIndex("by_businessId_createdAt", (q) => q.eq("businessId", args.businessId))
+      .order("desc")
+      .take(200);
+
+    const [summary, recentFeedbackDocs] = await Promise.all([
+      summaryPromise,
+      recentFeedbackPromise,
+    ]);
     const summaryTotals = aggregateSummary(summary);
 
     const now = Date.now();
