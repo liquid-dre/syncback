@@ -67,7 +67,7 @@ export default function BasicModal({
       <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
         <div
           aria-hidden="true"
-          className="absolute inset-0 cursor-pointer"
+          className="absolute inset-0 cursor-pointer bg-slate-900/30 backdrop-blur-[2px] transition-colors dark:bg-slate-950/60"
           onClick={onClose}
         />
         <div
@@ -75,19 +75,22 @@ export default function BasicModal({
           aria-modal="true"
           aria-labelledby={title ? headingId : undefined}
           className={cn(
-            "relative z-10 w-full origin-center overflow-hidden rounded-[32px] border border-white/60 bg-white/95 backdrop-blur-xl shadow-[0_40px_80px_-40px_rgba(15,23,42,0.45)] transition duration-200",
+            "relative z-10 w-full origin-center overflow-hidden rounded-[32px] border border-white/60 bg-white/95 backdrop-blur-xl shadow-[0_40px_80px_-40px_rgba(15,23,42,0.45)] transition duration-200 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-[0_40px_80px_-40px_rgba(2,6,23,0.75)]",
             sizeMap[size],
             className,
           )}
         >
-          <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-br from-white/40 via-white/60 to-slate-100/80" aria-hidden="true" />
+          <div
+            className="absolute inset-x-0 top-0 h-40 bg-gradient-to-br from-white/40 via-white/60 to-slate-100/80 transition dark:from-slate-900/80 dark:via-slate-900/95 dark:to-slate-950/80"
+            aria-hidden="true"
+          />
           <div className="relative flex flex-col gap-6 p-8">
             {title ? (
               <div className="flex items-start justify-between gap-6">
                 <div>
                   <p
                     id={headingId}
-                    className="text-lg font-semibold tracking-tight text-slate-900"
+                    className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100"
                   >
                     {title}
                   </p>
@@ -95,7 +98,7 @@ export default function BasicModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="inline-flex size-9 items-center justify-center rounded-full border border-slate-200/80 bg-white/80 text-slate-500 shadow-sm transition hover:-translate-y-[1px] hover:border-slate-300 hover:text-slate-900 hover:shadow"
+                  className="inline-flex size-9 items-center justify-center rounded-full border border-slate-200/80 bg-white/80 text-slate-500 shadow-sm transition hover:-translate-y-[1px] hover:border-slate-300 hover:text-slate-900 hover:shadow dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-slate-100"
                   aria-label="Close dialog"
                 >
                   <svg
